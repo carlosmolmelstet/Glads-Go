@@ -1,23 +1,22 @@
-import { Box, Heading, Flex, Progress } from '@chakra-ui/react';
+import { Box, Text, Flex, Progress, Stack , Spinner} from '@chakra-ui/react';
 
 export function Loading(): JSX.Element {
   return (
     <Flex
       justifyContent="center"
       alignItems="center"
-      h="100vh"
       flexDir="column"
+      h="70vh"
     >
-      <Box>
-        <Heading>Carregando aplicação...</Heading>
+        <Text fontSize={20} fontWeight="thin">Carregando...</Text>
         <Progress
           mt={4}
           size="xs"
+          w={300}
           isIndeterminate
           bgColor="transparent"
-          colorScheme="orange"
+          colorScheme="gray"
         />
-      </Box>
     </Flex>
   );
 }
