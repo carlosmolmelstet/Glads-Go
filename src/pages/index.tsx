@@ -6,7 +6,7 @@ import { api } from '../services/api';
 import { Loading } from '../components/Utils/Loading';
 import { Error } from '../components/Utils/Error';
 
-interface Image {
+interface User {
   title: string;
   description: string;
   url: string;
@@ -14,14 +14,14 @@ interface Image {
   id: string;
 }
 
-interface GetImagesResponse {
+interface GetUsersResponse {
   after: string;
-  data: Image[];
+  data: User[];
 }
 
 export default function Home(): JSX.Element {
-  async function fetchImages({ pageParam = null }): Promise<GetImagesResponse> {
-    const { data } = await api('/api/images', {
+  async function fetchUsers({ pageParam = null }): Promise<GetUsersResponse> {
+    const { data } = await api('/api/users', {
       params: {
         after: pageParam,
       },
@@ -36,7 +36,7 @@ export default function Home(): JSX.Element {
     isFetchingNextPage,
     fetchNextPage,
     hasNextPage,
-  } = useInfiniteQuery('images', fetchImages, {
+  } = useInfiniteQuery('users', fetchUsers, {
     getNextPageParam: lastPage => lastPage?.after || null,
   });
 
@@ -59,13 +59,6 @@ export default function Home(): JSX.Element {
     <>
 
       <Box maxW={1120} px={[10, 15, 20]} mx="auto" my={[10, 15, 20]}>
-        <CardList cards={formattedData} />
-
-        {hasNextPage && (
-          <Button onClick={() => fetchNextPage()} disabled={isFetchingNextPage}>
-            {isFetchingNextPage ? 'Carregando...' : 'Carregar mais'}
-          </Button>
-        )}
       </Box>
     </>
   );

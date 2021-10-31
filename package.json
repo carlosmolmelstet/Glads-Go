@@ -28,6 +28,7 @@
     "yup": "^0.32.9"
   },
   "devDependencies": {
+    "@chakra-ui/cli": "^1.5.3",
     "@testing-library/jest-dom": "^5.11.9",
     "@testing-library/react": "^11.2.5",
     "@testing-library/react-hooks": "^5.1.1",

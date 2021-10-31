@@ -1,7 +1,6 @@
 import {
     Button,
     Box,
-    Text,
     Flex,
     Input,
     InputLeftElement,
@@ -9,61 +8,46 @@ import {
     Table,
     Thead,
     Tbody,
-    Tfoot,
     Tr,
     Th,
+    Icon,
     Td,
-    TableCaption,
+    Avatar,
+    useDisclosure,
+    useBreakpointValue
 } from '@chakra-ui/react';
-import React, { useMemo } from 'react';
-import { useInfiniteQuery } from 'react-query';
+import React from 'react';
+import { useQuery } from 'react-query';
 import { api } from '../services/api';
 import { Loading } from '../components/Utils/Loading';
 import { Error } from '../components/Utils/Error';
 import { FiSearch } from 'react-icons/fi';
+import { ModalAddImage } from '../components/Modal/AddImage';
+import User from '../interfaces/users/User';
+import { FiEdit, FiTrash2 } from 'react-icons/fi';
 
-interface Image {
-    title: string;
-    description: string;
-    url: string;
-    ts: number;
-    id: string;
-}
-
-interface GetImagesResponse {
+interface GetUsersResponse {
     after: string;
-    data: Image[];
+    data: User[];
 }
 
 export default function Home(): JSX.Element {
-    async function fetchImages({ pageParam = null }): Promise<GetImagesResponse> {
-        const { data } = await api('/api/images', {
-            params: {
-                after: pageParam,
-            },
-        });
+    const { onOpen, isOpen, onClose } = useDisclosure();
+    const isSmalTable = useBreakpointValue({ base: false, md: true })
+
+    async function fetchUsers(): Promise<GetUsersResponse> {
+        const { data } = await api('/api/users');
         return data;
     }
 
     const {
         data,
         isLoading,
-        isError,
-        isFetchingNextPage,
-        fetchNextPage,
-        hasNextPage,
-    } = useInfiniteQuery('images', fetchImages, {
-        getNextPageParam: lastPage => lastPage?.after || null,
-    });
+        isError
+    } = useQuery('users', fetchUsers);
 
-    const formattedData = useMemo(() => {
-        const formatted = data?.pages.flatMap(imageData => {
-            return imageData.data.flat();
-        });
-        return formatted;
-    }, [data]);
 
-    console.log(formattedData)
+
     if (isLoading && !isError) {
         return <Loading />;
     }
@@ -74,6 +58,8 @@ export default function Home(): JSX.Element {
 
     return (
         <Box>
+                            <ModalAddImage isOpen={isOpen} onClose={onClose} />
+
             <Flex justify="space-between">
                 <InputGroup w={200}>
                     <InputLeftElement
@@ -82,43 +68,58 @@ export default function Home(): JSX.Element {
                     />
                     <Input type="tel" placeholder="Phone number" />
                 </InputGroup>
-                <Button>Adicionar</Button>
+                <Button onClick={() => onOpen()}>Adicionar</Button>
             </Flex>
-
-            <Table variant="simple">
-                <TableCaption>Imperial to metric conversion factors</TableCaption>
+            <Table>
                 <Thead>
                     <Tr>
-                        <Th>To convert</Th>
-                        <Th>into</Th>
-                        <Th isNumeric>multiply by</Th>
+                        <Th>Usuario</Th>
+                        <Th w={10}>Posição</Th>
+                        {isSmalTable ? (
+                            <>
+                                <Th>Telefone</Th>
+                                <Th>Email</Th>
+                            </>
+                        ) : <></>}
+                        <Th>Ações</Th>
                     </Tr>
                 </Thead>
                 <Tbody>
-                    <Tr>
-                        <Td>inches</Td>
-                        <Td>millimetres (mm)</Td>
-                        <Td isNumeric>25.4</Td>
-                    </Tr>
-                    <Tr>
-                        <Td>feet</Td>
-                        <Td>centimetres (cm)</Td>
-                        <Td isNumeric>30.48</Td>
-                    </Tr>
-                    <Tr>
-                        <Td>yards</Td>
-                        <Td>metres (m)</Td>
-                        <Td isNumeric>0.91444</Td>
-                    </Tr>
+                    {data.data.map(user => (
+                        <Tr key={user.id}>
+                            <Td>
+                                <Flex align="center">
+                                    <Avatar
+                                        size={'sm'}
+                                        src={user.url}
+                                        name={user.name}
+                                        mr={4}
+                                    />
+                                    {user.name}
+                                </Flex>
+                            </Td>
+                            <Td textAlign="center">
+                                {user.position}
+                            </Td>
+                            {isSmalTable ? (
+                                <>
+                                    <Td>
+                                        {user.phone}
+                                    </Td>
+                                    <Td>
+                                        {user.email}
+                                    </Td>
+                                </>
+                            ) : <></>}
+                            <Td>
+                                <Icon as={FiEdit} />
+                                <Icon as={FiTrash2} />
+                            </Td>
+                        </Tr>
+                    ))}
                 </Tbody>
-                <Tfoot>
-                    <Tr>
-                        <Th>To convert</Th>
-                        <Th>into</Th>
-                        <Th isNumeric>multiply by</Th>
-                    </Tr>
-                </Tfoot>
             </Table>
+
         </Box>
     );
 }

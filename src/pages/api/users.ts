@@ -1,19 +1,16 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import fauna from 'faunadb';
+import User from '../../interfaces/users/User';
 
 const { query } = fauna;
 const client = new fauna.Client({ secret: process.env.FAUNA_API_KEY });
 
-interface ImagesQueryResponse {
+interface UsersQueryResponse {
   after?: {
     id: string;
   };
   data: {
-    data: {
-      title: string;
-      description: string;
-      url: string;
-    };
+    data: User;
     ts: number;
     ref: {
       id: string;
@@ -26,15 +23,23 @@ export default async function handler(
   res: NextApiResponse
 ): Promise<void> {
   if (req.method === 'POST') {
-    const { url, title, description } = req.body;
+    const {
+      url,
+      position,
+      name,
+      phone,
+      email
+     } = req.body;
 
     return client
       .query(
-        query.Create(query.Collection('images'), {
+        query.Create(query.Collection('users'), {
           data: {
-            title,
-            description,
+            name,
+            phone,
+            email,
             url,
+            position,
           },
         })
       )
@@ -53,14 +58,14 @@ export default async function handler(
 
     const queryOptions = {
       size: 6,
-      ...(after && { after: query.Ref(query.Collection('images'), after) }),
+      ...(after && { after: query.Ref(query.Collection('users'), after) }),
     };
 
     return client
-      .query<ImagesQueryResponse>(
+      .query<UsersQueryResponse>(
         query.Map(
           query.Paginate(
-            query.Documents(query.Collection('images')),
+            query.Documents(query.Collection('users')),
             queryOptions
           ),
           query.Lambda('X', query.Get(query.Var('X')))

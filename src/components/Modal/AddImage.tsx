@@ -23,14 +23,12 @@ export function ModalAddImage({
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={handleCloseModal} isCentered size="4xl">
-      <ModalOverlay />
-      <ModalContent bgColor="pGray.900">
-        <ModalHeader fontSize="4xl">Nova imagem</ModalHeader>
-
+    <Modal isOpen={isOpen} onClose={handleCloseModal} isCentered size="md">
+      <ModalOverlay w="100%" />
+      <ModalContent bgColor="pGray.900" maxW="95vw">
+        <ModalHeader fontSize="2xl">Novo usuario</ModalHeader>
         <ModalCloseButton />
-
-        <ModalBody px={60}>
+        <ModalBody>
           <FormAddImage closeModal={handleCloseModal} />
         </ModalBody>
       </ModalContent>

@@ -30,14 +30,13 @@ const TextInputBase: ForwardRefRenderFunction<HTMLInputElement, InputProps> = (
         aria-label={name}
         name={name}
         ref={ref}
-        borderColor="transparent"
-        bgColor="pGray.800"
-        color="pGray.50"
+        borderColor="gray.500"
+        color="gray.50"
         _placeholder={{
-          color: 'pGray.200',
+          color: 'gray.200',
         }}
         _hover={{
-          borderColor: 'orange.400',
+          borderColor: 'gray.200',
         }}
         py={6}
         pr={8}

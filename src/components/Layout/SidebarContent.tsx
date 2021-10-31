@@ -40,13 +40,11 @@ export default function SidebarContent({ onClose, ...rest }: SidebarProps) {
         <CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClose} />
       </Flex>
       <Stack spacing={1}>
-      {LinkItems.map((link) => (
-        <>
-      <NavItem onClick={onClose} mx="4" key={link.name} route={link.route} icon={link.icon} isActive={router.pathname == link.route ? true : false}>
-            {link.name}
-        </NavItem>
-        </>
-      ))}
+        {LinkItems.map((link) => (
+            <NavItem onClick={onClose} mx="4" key={link.name} route={link.route} icon={link.icon} isActive={router.pathname == link.route ? true : false}>
+              {link.name}
+            </NavItem>
+        ))}
       </Stack>
     </Box>
   );
