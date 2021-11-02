@@ -1,6 +1,6 @@
 // theme.js
 import { extendTheme, ThemeConfig } from "@chakra-ui/react"
-// import { components } from './components';
+import { components } from "./components/Index";
 import foundations from "./foundations";
 import styles from "./styles";
 
@@ -11,7 +11,7 @@ const config: ThemeConfig = {
 
 const theme = extendTheme({
   ...foundations,
-  // components,
+  components,
   styles,
   config,
 

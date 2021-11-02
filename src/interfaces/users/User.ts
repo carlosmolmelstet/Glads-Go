@@ -1,8 +1,16 @@
+interface Position {
+    id: string,
+    name: string,
+    shortName: string;
+}
+
+
 export default interface User {
     name: string;
-    position: string;
+    positionId: string;
+    position: Position;
     phone: string;
     email: string;
-    url: string;
+    imageUrl: string;
     id: string;
 }

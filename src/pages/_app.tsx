@@ -1,11 +1,12 @@
 import { AppProps } from 'next/app';
 import { ChakraProvider } from '@chakra-ui/react';
 import { QueryClient, QueryClientProvider } from 'react-query';
+ import { ReactQueryDevtools } from 'react-query/devtools'
 import theme  from '../styles/theme/index';
 import LayoutDashboard from '../components/Layout/Index';
+import { queryClient } from '../services/queryClient';
 
 function MyApp({ Component, pageProps }: AppProps): JSX.Element {
-  const queryClient = new QueryClient();
 
   return (
     <ChakraProvider theme={theme}>
@@ -13,6 +14,7 @@ function MyApp({ Component, pageProps }: AppProps): JSX.Element {
       <LayoutDashboard>
         <Component {...pageProps} />
       </LayoutDashboard>
+      <ReactQueryDevtools />
       </QueryClientProvider>
     </ChakraProvider>
   );

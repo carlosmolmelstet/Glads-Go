@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import fauna from 'faunadb';
-import User from '../../interfaces/users/User';
+import User from '../../../interfaces/users/User';
+import { api } from '../../../services/api';
 
 const { query } = fauna;
 const client = new fauna.Client({ secret: process.env.FAUNA_API_KEY });
@@ -31,6 +32,9 @@ export default async function handler(
       email
      } = req.body;
 
+
+
+     console.log(url);
     return client
       .query(
         query.Create(query.Collection('users'), {
@@ -56,10 +60,17 @@ export default async function handler(
   if (req.method === 'GET') {
     const { after } = req.query;
 
+
+
+
+
     const queryOptions = {
       size: 6,
       ...(after && { after: query.Ref(query.Collection('users'), after) }),
     };
+
+
+ 
 
     return client
       .query<UsersQueryResponse>(

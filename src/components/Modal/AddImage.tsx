@@ -5,6 +5,7 @@ import {
   ModalHeader,
   ModalBody,
   ModalCloseButton,
+  useColorModeValue
 } from '@chakra-ui/react';
 
 import { FormAddImage } from '../Form/FormAddImage';
@@ -23,9 +24,9 @@ export function ModalAddImage({
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={handleCloseModal} isCentered size="md">
-      <ModalOverlay w="100%" />
-      <ModalContent bgColor="pGray.900" maxW="95vw">
+    <Modal isOpen={isOpen} onClose={handleCloseModal} isCentered size="2xl">
+      <ModalOverlay />
+      <ModalContent bgColor={useColorModeValue("gray.50", "gray.800")} >
         <ModalHeader fontSize="2xl">Novo usuario</ModalHeader>
         <ModalCloseButton />
         <ModalBody>

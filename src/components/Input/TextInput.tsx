@@ -38,8 +38,7 @@ const TextInputBase: ForwardRefRenderFunction<HTMLInputElement, InputProps> = (
         _hover={{
           borderColor: 'gray.200',
         }}
-        py={6}
-        pr={8}
+        size="lg"
         {...rest}
       />
 

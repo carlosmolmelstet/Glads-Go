@@ -1,12 +1,13 @@
-import { Box, Button, Flex, SimpleGrid, Stack, useToast } from '@chakra-ui/react';
+import { Box, Button, Flex, SimpleGrid, Stack, useToast, Select } from '@chakra-ui/react';
 import { useForm } from 'react-hook-form';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 
 import { api } from '../../services/api';
 import { FileInput } from '../Input/FileInput';
 import { TextInput } from '../Input/TextInput';
 import User from '../../interfaces/users/User';
+import Position from '../../interfaces/positions/Position';
 
 interface FormAddImageProps {
   closeModal: () => void;
@@ -14,21 +15,21 @@ interface FormAddImageProps {
 export function FormAddImage({ closeModal }: FormAddImageProps): JSX.Element {
   const [imageUrl, setImageUrl] = useState('');
   const [localImageUrl, setLocalImageUrl] = useState('');
+  const [positions, setPositions] = useState<Position[]>([]);
   const toast = useToast();
 
-  const acceptedFormatsRegex =
-    /(?:([^:/?#]+):)?(?:([^/?#]*))?([^?#](?:jpeg|gif|png))(?:\?([^#]*))?(?:#(.*))?/g;
+  async function fetchPositions() {
+    const { data } = await api.get<Position[]>('Positions');
+    setPositions(data);
+  }
+
+  useEffect(() => {
+    fetchPositions();
+  }, [])
 
   const formValidations = {
     image: {
-      required: 'Arquivo obrigatório',
-      validate: {
-        lessThan10MB: fileList =>
-          fileList[0].size < 10000000 || 'O arquivo deve ser menor que 10MB',
-        acceptedFormats: fileList =>
-          acceptedFormatsRegex.test(fileList[0].type) ||
-          'Somente são aceitos arquivos PNG, JPEG e GIF',
-      },
+
     },
     name: {
       required: 'Nome obrigatório',
@@ -41,15 +42,11 @@ export function FormAddImage({ closeModal }: FormAddImageProps): JSX.Element {
         message: 'Máximo de 50 caracteres',
       },
     },
-    position: {
+    positionId: {
       required: 'Posição obrigatória',
       minLength: {
         value: 2,
         message: 'Mínimo de 2 caracteres',
-      },
-      maxLength: {
-        value: 3,
-        message: 'Máximo de 3 caracteres',
       },
     },
     phone: {
@@ -70,9 +67,9 @@ export function FormAddImage({ closeModal }: FormAddImageProps): JSX.Element {
   const queryClient = useQueryClient();
   const mutation = useMutation(
     async (user: User) => {
-      await api.post('/api/users', {
+      await api.post('Save', {
         ...user,
-        url: imageUrl,
+        imageUrl: imageUrl
       });
     },
     {
@@ -88,15 +85,7 @@ export function FormAddImage({ closeModal }: FormAddImageProps): JSX.Element {
 
   const onSubmit = async (data: User): Promise<void> => {
     try {
-      if (!imageUrl) {
-        toast({
-          status: 'error',
-          title: 'Usuario não adicionado',
-          description:
-            'É preciso adicionar e aguardar o upload de uma imagem antes de realizar o cadastro.',
-        });
-        return;
-      }
+
       await mutation.mutateAsync(data);
       toast({
         title: 'Usuario cadastrado',
@@ -120,8 +109,8 @@ export function FormAddImage({ closeModal }: FormAddImageProps): JSX.Element {
   return (
     <Box as="form" width="100%" onSubmit={handleSubmit(onSubmit)}>
       <Stack spacing={4}>
-        <Flex align="flex-end"> 
-          <FileInput 
+        <Flex align="flex-end">
+          <FileInput
             setImageUrl={setImageUrl}
             localImageUrl={localImageUrl}
             setLocalImageUrl={setLocalImageUrl}
@@ -138,11 +127,17 @@ export function FormAddImage({ closeModal }: FormAddImageProps): JSX.Element {
           />
         </Flex>
         <SimpleGrid columns={2} spacing={4}>
-          <TextInput
+
+          <Select
             placeholder="Posição"
-            {...register('position', formValidations.position)}
-            error={errors.position}
-          />
+            {...register('positionId', formValidations.positionId)}
+            error={errors.positionId}
+            size="lg"
+          >
+            {positions.map(position => (
+              <option key={position.id} value={position.id}>{position.name}</option>
+            ))}
+          </Select>
 
           <TextInput
             placeholder="Telefone"

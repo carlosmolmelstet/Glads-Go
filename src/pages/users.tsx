@@ -2,9 +2,6 @@ import {
     Button,
     Box,
     Flex,
-    Input,
-    InputLeftElement,
-    InputGroup,
     Table,
     Thead,
     Tbody,
@@ -14,39 +11,60 @@ import {
     Td,
     Avatar,
     useDisclosure,
-    useBreakpointValue
+    useBreakpointValue,
+    Spinner,
+    Tooltip,
+    HStack,
 } from '@chakra-ui/react';
-import React from 'react';
-import { useQuery } from 'react-query';
+import React, { useState } from 'react';
+import { QueryClient, useMutation, useQuery } from 'react-query';
 import { api } from '../services/api';
 import { Loading } from '../components/Utils/Loading';
 import { Error } from '../components/Utils/Error';
-import { FiSearch } from 'react-icons/fi';
 import { ModalAddImage } from '../components/Modal/AddImage';
-import User from '../interfaces/users/User';
 import { FiEdit, FiTrash2 } from 'react-icons/fi';
+import { TablePagination as Pagination } from '../components/Table/Pagination';
+import User from '../interfaces/users/User';
+import ResponseTable from '../interfaces/Table/Response';
+import { Search } from '../components/Table/Search';
+import { ButtonAction } from '../components/Table/ButtonAction';
+import { queryClient } from '../services/queryClient';
 
-interface GetUsersResponse {
-    after: string;
-    data: User[];
-}
 
 export default function Home(): JSX.Element {
     const { onOpen, isOpen, onClose } = useDisclosure();
-    const isSmalTable = useBreakpointValue({ base: false, md: true })
+    const tableLg = useBreakpointValue({ base: true, lg: false });
+    const tableXl = useBreakpointValue({ base: true, xl: false });
+    const pageSize = 10;
+    const [page, setPage] = useState(1)
 
-    async function fetchUsers(): Promise<GetUsersResponse> {
-        const { data } = await api('/api/users');
+    async function fetchUsers(pageParam: number): Promise<ResponseTable<User>> {
+        const { data } = await api.post(`Filter`, {
+            page: pageParam,
+            pageSize: pageSize
+        });
         return data;
     }
+
+
+
+
+    const mutation = useMutation(async (userId: string) => {
+        return await api.delete(`Delete/${userId}`)
+    }, {
+        onSuccess: () => {
+            queryClient.invalidateQueries('users')
+        }
+    });
+
+
 
     const {
         data,
         isLoading,
-        isError
-    } = useQuery('users', fetchUsers);
-
-
+        isError,
+        isFetching
+    } = useQuery(['users', page], () => fetchUsers(page), { keepPreviousData: true, staleTime: 1000 * 60 });
 
     if (isLoading && !isError) {
         return <Loading />;
@@ -58,30 +76,28 @@ export default function Home(): JSX.Element {
 
     return (
         <Box>
-                            <ModalAddImage isOpen={isOpen} onClose={onClose} />
-
+            <ModalAddImage isOpen={isOpen} onClose={onClose} />
             <Flex justify="space-between">
-                <InputGroup w={200}>
-                    <InputLeftElement
-                        pointerEvents="none"
-                        children={<FiSearch color="gray.300" />}
-                    />
-                    <Input type="tel" placeholder="Phone number" />
-                </InputGroup>
-                <Button onClick={() => onOpen()}>Adicionar</Button>
+                <Flex align="center">
+                    <Search />
+                    {!isLoading && isFetching && <Spinner ml={4} size="sm" colorScheme="gray" />}
+                </Flex>
+                <Button colorScheme="blue" onClick={() => onOpen()}>Adicionar</Button>
             </Flex>
-            <Table>
-                <Thead>
+            <Table >
+                <Thead >
                     <Tr>
-                        <Th>Usuario</Th>
+                        <Th>Usuário</Th>
                         <Th w={10}>Posição</Th>
-                        {isSmalTable ? (
+                        {!tableLg && (
                             <>
-                                <Th>Telefone</Th>
-                                <Th>Email</Th>
+                                <Th w={60}>Telefone</Th>
+                                {!tableXl && (
+                                    <Th w={60}>Email</Th>
+                                )}
                             </>
-                        ) : <></>}
-                        <Th>Ações</Th>
+                        )}
+                        <Th w={20}>Ações</Th>
                     </Tr>
                 </Thead>
                 <Tbody>
@@ -91,7 +107,7 @@ export default function Home(): JSX.Element {
                                 <Flex align="center">
                                     <Avatar
                                         size={'sm'}
-                                        src={user.url}
+                                        src={user.imageUrl}
                                         name={user.name}
                                         mr={4}
                                     />
@@ -99,27 +115,47 @@ export default function Home(): JSX.Element {
                                 </Flex>
                             </Td>
                             <Td textAlign="center">
-                                {user.position}
+                                <Tooltip label={user.position.name}>
+                                    {user.position.shortName}
+                                </Tooltip>
                             </Td>
-                            {isSmalTable ? (
+                            {!tableLg && (
                                 <>
                                     <Td>
                                         {user.phone}
                                     </Td>
-                                    <Td>
-                                        {user.email}
-                                    </Td>
+                                    {!tableXl && (
+                                        <Td>
+                                            {user.email}
+                                        </Td>
+                                    )}
                                 </>
-                            ) : <></>}
+                            )}
                             <Td>
-                                <Icon as={FiEdit} />
-                                <Icon as={FiTrash2} />
+                                <HStack spacing={2}>
+                                    <ButtonAction title="editar" variant="blue" click={() => {
+                                            alert("editar")
+                                          }}>
+                                        <Icon as={FiEdit} fontSize={14} />
+                                    </ButtonAction>
+                                    <ButtonAction title="Excluir" variant="red" click={() => {
+                                            mutation.mutateAsync(user.id)
+                                          }}>
+                                        <Icon as={FiTrash2} fontSize={14} 
+                                        
+                                           />
+                                    </ButtonAction>
+                                </HStack>
                             </Td>
                         </Tr>
                     ))}
                 </Tbody>
             </Table>
-
+            <Pagination
+                total={data.total}
+                changePage={setPage}
+                pageSize={pageSize}
+            />
         </Box>
     );
 }
