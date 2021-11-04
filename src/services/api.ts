@@ -1,5 +1,5 @@
 import axios from 'axios';
 
 export const api = axios.create({
-    baseURL: 'https://localhost:44395/'
+    baseURL: 'https://api-glads-go.herokuapp.com/'
 });
