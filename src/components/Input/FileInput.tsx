@@ -100,15 +100,12 @@ const FileInputBase: ForwardRefRenderFunction<
         } as AxiosRequestConfig;
 
         try {
-          const response = await api.post(
+          const response = await axios.post(
             'https://api.imgbb.com/1/upload',
             formData,
             config
           );
 
-
-
-          console.log(response.data.data.url)
           setImageUrl(response.data.data.url);
           setLocalImageUrl(URL.createObjectURL(event.target.files[0]));
         } catch (err) {

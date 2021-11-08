@@ -19,7 +19,7 @@ export function FormAddImage({ closeModal }: FormAddImageProps): JSX.Element {
   const toast = useToast();
 
   async function fetchPositions() {
-    const { data } = await api.get<Position[]>('Positions');
+    const { data } = await api.get<Position[]>('User/Positions');
     setPositions(data);
   }
 
@@ -62,12 +62,18 @@ export function FormAddImage({ closeModal }: FormAddImageProps): JSX.Element {
         message: 'Máximo de 65 caracteres',
       },
     },
+    password: {
+      maxLength: {
+        value: 65,
+        message: 'Máximo de 65 caracteres',
+      },
+    },
   };
 
   const queryClient = useQueryClient();
   const mutation = useMutation(
     async (user: User) => {
-      await api.post('Save', {
+      await api.post('User/Save', {
         ...user,
         imageUrl: imageUrl
       });
@@ -85,7 +91,6 @@ export function FormAddImage({ closeModal }: FormAddImageProps): JSX.Element {
 
   const onSubmit = async (data: User): Promise<void> => {
     try {
-
       await mutation.mutateAsync(data);
       toast({
         title: 'Usuario cadastrado',
@@ -148,6 +153,11 @@ export function FormAddImage({ closeModal }: FormAddImageProps): JSX.Element {
             placeholder="Email"
             {...register('email', formValidations.email)}
             error={errors.email}
+          />
+          <TextInput
+            placeholder="Password"
+            {...register('password', formValidations.password)}
+            error={errors.password}
           />
         </SimpleGrid>
       </Stack>

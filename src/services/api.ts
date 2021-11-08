@@ -1,8 +1,3 @@
-import axios from 'axios';
+import { getAPIClient } from "./axios";
 
-
-let development = process.env.NODE_ENV !== 'production';
-
-export const api = axios.create({
-    baseURL: development ?  "https://localhost:44395/" : "https://api-glads-go.herokuapp.com/"
-})
+export const api = getAPIClient();

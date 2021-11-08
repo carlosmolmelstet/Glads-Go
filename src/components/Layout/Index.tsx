@@ -9,14 +9,15 @@ import {
 } from '@chakra-ui/react';
 import SidebarContent from './SidebarContent';
 import MobileNav from './MobileNav';
+import UserProfile from '../../interfaces/users/UserProfile';
 
 interface LayoutDashboardProps {
-  children: ReactNode
+  children: ReactNode;
+  profile: UserProfile;
 }
 
-export default function LayoutDashboard({children} : LayoutDashboardProps) {
+export default function LayoutDashboard({children, profile} : LayoutDashboardProps) {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { colorMode } = useColorMode();
 
   return (
     <Box minH="100vh" >
@@ -36,7 +37,7 @@ export default function LayoutDashboard({children} : LayoutDashboardProps) {
           <SidebarContent onClose={onClose} />
         </DrawerContent>
       </Drawer>
-      <MobileNav onOpen={onOpen} />
+      <MobileNav profile={profile} onOpen={onOpen} />
       <Box ml={{ base: 0, md: 60 }} p="4">
         {children}
       </Box>

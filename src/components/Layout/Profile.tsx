@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
   Avatar,
   Box,
@@ -14,9 +14,13 @@ import {
   MenuList,
 } from '@chakra-ui/react';
 import {FiChevronDown,} from 'react-icons/fi';
+import UserProfile from '../../interfaces/users/UserProfile';
 
-export default function Profile() {
+interface ProfileProps {
+  profile: UserProfile;
+}
 
+export default function Profile({profile}: ProfileProps) {
   return (
     <Flex alignItems={'center'}>
       <Menu>
@@ -27,18 +31,17 @@ export default function Profile() {
           <HStack>
             <Avatar
               size={'sm'}
-              src={
-                'https://i.ibb.co/K7sWNd5/42452946-2220860294903317-2695271421973626880-n.jpg'
-              }
+              src={profile.imageUrl}
+              name={profile.name}
             />
             <VStack
               display={{ base: 'none', md: 'flex' }}
               alignItems="flex-start"
               spacing="1px"
               ml="2">
-              <Text fontSize="sm">Carlos Molmelstet</Text>
+              <Text fontSize="sm">{profile.name}</Text>
               <Text fontSize="xs" color={useColorModeValue("gray.600", "gray.500")}>
-                Admin
+                {profile.positionName}
               </Text>
             </VStack>
             <Box display={{ base: 'none', md: 'flex' }}>

@@ -8,9 +8,9 @@ interface Position {
 export default interface User {
     name: string;
     positionId: string;
-    position: Position;
+    position?: Position;
     phone: string;
     email: string;
-    imageUrl: string;
+    imageUrl?: string;
     id: string;
 }

@@ -22,11 +22,13 @@ import { FiMenu } from 'react-icons/fi';
 import Profile from './Profile';
 import ThemeSwitch from './ThemeSwitch';
 import Logo from './Logo';
+import UserProfile from '../../interfaces/users/UserProfile';
 
 interface MobileProps extends FlexProps {
   onOpen: () => void;
+  profile: UserProfile;
 }
-export default function MobileNav({ onOpen, ...rest }: MobileProps) {
+export default function MobileNav({ profile, onOpen, ...rest }: MobileProps) {
   const hideLogo = useBreakpointValue({ base: false, md: true })
 
   return (
@@ -47,7 +49,7 @@ export default function MobileNav({ onOpen, ...rest }: MobileProps) {
       <Logo hide={hideLogo} />
       <HStack spacing="6">
         <ThemeSwitch />
-        <Profile />
+        <Profile profile={profile} />
       </HStack>
     </Flex>
   );
