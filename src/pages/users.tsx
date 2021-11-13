@@ -21,7 +21,7 @@ import { QueryClient, useMutation, useQuery } from 'react-query';
 import { api } from '../services/api';
 import { Loading } from '../components/Utils/Loading';
 import { Error } from '../components/Utils/Error';
-import { ModalAddImage } from '../components/Modal/AddImage';
+import { ModalAddUser } from '../components/Modal/AddUser';
 import { FiEdit, FiTrash2 } from 'react-icons/fi';
 import { TablePagination as Pagination } from '../components/Table/Pagination';
 import User from '../interfaces/users/User';
@@ -68,7 +68,7 @@ export default function Home(): JSX.Element {
   }
 
   const mutation = useMutation(async (userId: string) => {
-    return await api.delete(`User/Delete/${userId}`)
+    return await api.delete(`User/${userId}`)
   }, {
     onSuccess: () => {
       queryClient.invalidateQueries('users')
@@ -93,7 +93,7 @@ export default function Home(): JSX.Element {
   return (
     <LayoutDashboard profile={userProfile}>
       <Box>
-        <ModalAddImage isOpen={isOpen} onClose={onClose} />
+        <ModalAddUser isOpen={isOpen} onClose={onClose} />
         <Flex justify="space-between">
           <Flex align="center">
             <Search />

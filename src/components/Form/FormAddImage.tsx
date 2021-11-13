@@ -8,6 +8,7 @@ import { FileInput } from '../Input/FileInput';
 import { TextInput } from '../Input/TextInput';
 import User from '../../interfaces/users/User';
 import Position from '../../interfaces/positions/Position';
+import { PhoneInput } from '../Input/PhoneInput';
 
 interface FormAddImageProps {
   closeModal: () => void;
@@ -26,11 +27,7 @@ export function FormAddImage({ closeModal }: FormAddImageProps): JSX.Element {
   useEffect(() => {
     fetchPositions();
   }, [])
-
   const formValidations = {
-    image: {
-
-    },
     name: {
       required: 'Nome obrigatório',
       minLength: {
@@ -51,15 +48,16 @@ export function FormAddImage({ closeModal }: FormAddImageProps): JSX.Element {
     },
     phone: {
       required: 'Telefone obrigatória',
-      maxLength: {
-        value: 15,
-        message: 'Máximo de 15 caracteres',
+      pattern: {
+        value: /\(\d{2,}\) \d{4,}\-\d{4}/g,
+        message: 'Email invalido',
       },
     },
     email: {
-      maxLength: {
-        value: 65,
-        message: 'Máximo de 65 caracteres',
+      required: 'Email é obrigatório',
+      pattern: {
+        value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
+        message: 'Email invalido',
       },
     },
     password: {
@@ -76,14 +74,23 @@ export function FormAddImage({ closeModal }: FormAddImageProps): JSX.Element {
       await api.post('User/Save', {
         ...user,
         imageUrl: imageUrl
-      });
+      }).catch(function (error) {
+        if (error.response) {
+          throw error.response.data;
+        }
+      });;
     },
     {
       onSuccess: () => {
         queryClient.invalidateQueries('users');
-      },
+      }
     }
   );
+
+    function Teste(e) {
+      var x = e.target.value.replace(/\D/g, '').match(/(\d{3})(\d{3})(\d{4})/);
+      e.target.value = '(' + x[1] + ') ' + x[2] + '-' + x[3];
+    }
 
   const { register, handleSubmit, reset, formState, setError, trigger } =
     useForm();
@@ -97,17 +104,16 @@ export function FormAddImage({ closeModal }: FormAddImageProps): JSX.Element {
         description: 'Seu usuario foi cadastrada com sucesso.',
         status: 'success',
       });
-    } catch {
-      toast({
-        title: 'Falha no cadastro',
-        description: 'Ocorreu um erro ao tentar cadastrar a sua imagem.',
-        status: 'error',
-      });
-    } finally {
       reset();
       setImageUrl('');
       setLocalImageUrl('');
       closeModal();
+    } catch (exception) {
+      toast({
+        title: 'Falha no cadastro',
+        description: exception,
+        status: 'error',
+      });
     }
   };
 
@@ -121,7 +127,7 @@ export function FormAddImage({ closeModal }: FormAddImageProps): JSX.Element {
             setLocalImageUrl={setLocalImageUrl}
             setError={setError}
             trigger={trigger}
-            {...register('image', formValidations.image)}
+            {...register('image')}
             error={errors.image}
           />
           <TextInput
@@ -143,8 +149,7 @@ export function FormAddImage({ closeModal }: FormAddImageProps): JSX.Element {
               <option key={position.id} value={position.id}>{position.name}</option>
             ))}
           </Select>
-
-          <TextInput
+          <PhoneInput
             placeholder="Telefone"
             {...register('phone', formValidations.phone)}
             error={errors.phone}
@@ -158,6 +163,7 @@ export function FormAddImage({ closeModal }: FormAddImageProps): JSX.Element {
             placeholder="Password"
             {...register('password', formValidations.password)}
             error={errors.password}
+            type="password"
           />
         </SimpleGrid>
       </Stack>

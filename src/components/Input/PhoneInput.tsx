@@ -11,12 +11,12 @@ import {
 } from '@chakra-ui/react';
 import { FiAlertCircle } from 'react-icons/fi';
 
-interface InputProps extends ChakraInputProps {
+interface PhoneProps extends ChakraInputProps {
   name: string;
   error?: FieldError;
 }
 
-const TextInputBase: ForwardRefRenderFunction<HTMLInputElement, InputProps> = (
+const PhoneInputBase: ForwardRefRenderFunction<HTMLInputElement, PhoneProps> = (
   { name, error = null,...rest },
   ref
 ) => {
@@ -28,6 +28,8 @@ const TextInputBase: ForwardRefRenderFunction<HTMLInputElement, InputProps> = (
       isInvalid={!!error}
     >
       <ChakraInput
+        as={InputMask}
+        mask="(99) 99999-9999"
         aria-label={name}
         name={name}
         ref={ref}
@@ -54,4 +56,4 @@ const TextInputBase: ForwardRefRenderFunction<HTMLInputElement, InputProps> = (
   );
 };
 
-export const TextInput = forwardRef(TextInputBase);
+export const PhoneInput = forwardRef(PhoneInputBase);

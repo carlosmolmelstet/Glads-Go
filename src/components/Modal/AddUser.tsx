@@ -10,15 +10,15 @@ import {
 
 import { FormAddImage } from '../Form/FormAddImage';
 
-interface ModalAddImageProps {
+interface ModalAddUserProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-export function ModalAddImage({
+export function ModalAddUser({
   isOpen,
   onClose,
-}: ModalAddImageProps): JSX.Element {
+}: ModalAddUserProps): JSX.Element {
   const handleCloseModal = (): void => {
     onClose();
   };
