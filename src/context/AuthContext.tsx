@@ -44,10 +44,12 @@ export function AuthProvider({ children }) {
    }, []);
 
   async function signIn({ email, password }: SignInData) {
-    const {data : { token, user}} = await api.post<SignInResponseData>("Account/Authenticate", {
+
+
+    const {data : { token, user}} = await api.post<SignInResponseData>("Account/Login", {
       email: email,
       password: password
-    });
+    } );
 
     setCookie(undefined, 'glads-token', token, {
       maxAge: 60 * 60 * 1, // 1 hour
