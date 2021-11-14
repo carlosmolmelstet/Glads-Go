@@ -44,8 +44,6 @@ export function AuthProvider({ children }) {
    }, []);
 
   async function signIn({ email, password }: SignInData) {
-
-
     const {data : { token, user}} = await api.post<SignInResponseData>("Account/Login", {
       email: email,
       password: password

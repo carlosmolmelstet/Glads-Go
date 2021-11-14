@@ -99,7 +99,7 @@ export default function Home(): JSX.Element {
             <Search />
             {!isLoading && isFetching && <Spinner ml={4} size="sm" colorScheme="gray" />}
           </Flex>
-          <Button colorScheme="blue" onClick={() => onOpen()}>Adicionar</Button>
+          <Button background="red.500" _hover={{backgroundColor: "red.600"}} onClick={() => onOpen()}>Adicionar</Button>
         </Flex>
         <Table >
           <Thead >

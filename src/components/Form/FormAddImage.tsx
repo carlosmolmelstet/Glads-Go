@@ -1,4 +1,4 @@
-import { Box, Button, Flex, SimpleGrid, Stack, useToast, Select } from '@chakra-ui/react';
+import { Box, Button, Flex, SimpleGrid, Stack, useToast, Select, HStack } from '@chakra-ui/react';
 import { useForm } from 'react-hook-form';
 import React, { useEffect, useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
@@ -26,13 +26,14 @@ export function FormAddImage({ closeModal }: FormAddImageProps): JSX.Element {
 
   useEffect(() => {
     fetchPositions();
-  }, [])
+  }, []);
+
   const formValidations = {
     name: {
-      required: 'Nome obrigatório',
+      required: 'Nome é obrigatório',
       minLength: {
         value: 2,
-        message: 'Mínimo de 2 caracteres',
+        message: 'Mínimo de 3 caracteres',
       },
       maxLength: {
         value: 50,
@@ -40,17 +41,13 @@ export function FormAddImage({ closeModal }: FormAddImageProps): JSX.Element {
       },
     },
     positionId: {
-      required: 'Posição obrigatória',
-      minLength: {
-        value: 2,
-        message: 'Mínimo de 2 caracteres',
-      },
+      required: 'Posição é obrigatória',
     },
     phone: {
-      required: 'Telefone obrigatória',
+      required: 'Telefone é obrigatório',
       pattern: {
         value: /\(\d{2,}\) \d{4,}\-\d{4}/g,
-        message: 'Email invalido',
+        message: 'Telefone invalido',
       },
     },
     email: {
@@ -61,6 +58,11 @@ export function FormAddImage({ closeModal }: FormAddImageProps): JSX.Element {
       },
     },
     password: {
+      required: 'Senha é obrigatório',
+      minLength: {
+        value: 4,
+        message: 'Mínimo de 4 caracteres',
+      },
       maxLength: {
         value: 65,
         message: 'Máximo de 65 caracteres',
@@ -87,10 +89,10 @@ export function FormAddImage({ closeModal }: FormAddImageProps): JSX.Element {
     }
   );
 
-    function Teste(e) {
-      var x = e.target.value.replace(/\D/g, '').match(/(\d{3})(\d{3})(\d{4})/);
-      e.target.value = '(' + x[1] + ') ' + x[2] + '-' + x[3];
-    }
+  function Teste(e) {
+    var x = e.target.value.replace(/\D/g, '').match(/(\d{3})(\d{3})(\d{4})/);
+    e.target.value = '(' + x[1] + ') ' + x[2] + '-' + x[3];
+  }
 
   const { register, handleSubmit, reset, formState, setError, trigger } =
     useForm();
@@ -118,7 +120,7 @@ export function FormAddImage({ closeModal }: FormAddImageProps): JSX.Element {
   };
 
   return (
-    <Box as="form" width="100%" onSubmit={handleSubmit(onSubmit)}>
+    <Box as="form" width="100%" onSubmit={handleSubmit(onSubmit)} mb={4}>
       <Stack spacing={4}>
         <Flex align="flex-end">
           <FileInput
@@ -138,7 +140,6 @@ export function FormAddImage({ closeModal }: FormAddImageProps): JSX.Element {
           />
         </Flex>
         <SimpleGrid columns={2} spacing={4}>
-
           <Select
             placeholder="Posição"
             {...register('positionId', formValidations.positionId)}
@@ -160,25 +161,32 @@ export function FormAddImage({ closeModal }: FormAddImageProps): JSX.Element {
             error={errors.email}
           />
           <TextInput
-            placeholder="Password"
+            placeholder="Senha"
             {...register('password', formValidations.password)}
             error={errors.password}
             type="password"
           />
+          <Button
+            onClick={closeModal}
+            type="button"
+            float="right"
+            py={6}
+          >
+            Cancelar
+          </Button>
+          <Button
+            isLoading={formState.isSubmitting}
+            isDisabled={formState.isSubmitting}
+            type="submit"
+            float="right"
+            background="red.500"
+            _hover={{ backgroundColor: "red.600" }}
+            py={6}
+          >
+            Criar usuário
+          </Button>
         </SimpleGrid>
       </Stack>
-
-      <Button
-        my={6}
-        isLoading={formState.isSubmitting}
-        isDisabled={formState.isSubmitting}
-        type="submit"
-        float="right"
-        w="200px"
-        py={6}
-      >
-        Enviar
-      </Button>
     </Box>
   );
 }
