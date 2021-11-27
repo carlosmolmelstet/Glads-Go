@@ -14,7 +14,6 @@ const theme = extendTheme({
   components,
   styles,
   config,
-
 })
 
 export default theme;

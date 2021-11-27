@@ -134,7 +134,7 @@ const FileInputBase: ForwardRefRenderFunction<
     }, [cancelToken, error, isSending]);
 
     return (
-      <FormControl isInvalid={!!error} w={20} h={20}>
+      <FormControl isInvalid={!!error} w={20} h={20} minW={20} minH={20} overflow="hidden">
         <FormLabel
           htmlFor={name}
           cursor={isSending ? 'progress' : 'pointer'}
@@ -144,36 +144,35 @@ const FileInputBase: ForwardRefRenderFunction<
             <Image
               src={localImageUrl}
               alt="Uploaded photo"
-              borderRadius="md"
-              objectFit="cover"
+              borderRadius="full"
+              w={20} 
+              h={20}
+              minW={20} minH={20}
             />
           ) : (
             <Flex
               flexDir="column"
               justifyContent="center"
               alignItems="center"
-              borderRadius="md"
+              borderRadius="full"
               w={20}
               h={20}
-              bgColor="gray.600"
-              color="gray.300"
+              bgColor="red.600"
+              color="white"
               borderWidth={error?.message && 2}
               borderColor={error?.message && 'red.500'}
               cursor="pointer"
             >
               {isSending ? (
-                <>
+                <Flex borderRadius="full" direction="column" justify="center">
                   <CircularProgress
                     trackColor="pGray.200"
                     value={progress}
                     color="orange.500"
                   >
-                    <CircularProgressLabel>{progress}%</CircularProgressLabel>
+                  <CircularProgressLabel>{progress}%</CircularProgressLabel>
                   </CircularProgress>
-                  <Text as="span" pt={2} textAlign="center">
-                    Enviando...
-                  </Text>
-                </>
+                </Flex>
               ) : (
                 <Box pos="relative" h="full">
                   {!!error && (

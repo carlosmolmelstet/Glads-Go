@@ -15,6 +15,9 @@ const baseStyle = {
     letterSpacing: "wider",
     textAlign: "start",
   },
+  tr: {
+    border: "none"
+  },
   td: {
     textAlign: "start",
   },

@@ -1,4 +1,4 @@
-import { Button, Box, Input, Flex, Stack, useToast, useColorMode, Text } from '@chakra-ui/react';
+import { Button, Box, Input, Flex, Stack, useToast, useColorMode, Text, Image } from '@chakra-ui/react';
 import { useContext, useEffect } from 'react';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
@@ -30,11 +30,9 @@ export default function Home(): JSX.Element {
 
   return (
     <>
+      <Image src="/logo.svg" w="50px" mb={4} position="absolute" top={4} left={4} />
       <Flex w="100vw" h="100vh" overflow="hidden" justify="center" align="center" position="relative">
-        <Box src="/bannerLogin.png" position="absolute" w="150vw" h="150vh" backgroundSize="cover" backgroundPosition="center"  backgroundImage="url('/bannerLogin.png')"></Box>
-          <Stack borderRadius={16} display="flex" flexDir="column" spacing={4} alignItems="center" justify="center" position="relative" background="gray.800" margin={4} px={8} py={16} w={600} >
             <FormAddImage closeModal={() => Router.push('/')}/>
-          </Stack>
       </Flex>
     </>
   );

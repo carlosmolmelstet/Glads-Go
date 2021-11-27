@@ -10,8 +10,8 @@ interface TablePaginationProps {
 
 export function TablePagination({ total, pageSize = 10, changePage, ...rest }: TablePaginationProps) {
     
-    const Prev = forwardRef((props, ref) => <></>);
-    const Next = forwardRef((props, ref) => <></>);
+    const Prev = forwardRef(() => <></>);
+    const Next = forwardRef(() => <></>);
     const More = forwardRef((props, ref) => (
         <Button ref={ref} {...props}>
             ...

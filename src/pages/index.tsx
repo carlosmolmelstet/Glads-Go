@@ -1,5 +1,5 @@
-import { Button, Box, Input, Flex, Stack, useToast, useColorMode, Text } from '@chakra-ui/react';
-import { useContext, useEffect } from 'react';
+import { Button, Box, Input, Flex, Stack, useToast, useColorMode, Text,Image, Heading, FormControl, FormLabel, Link as ChakraLink } from '@chakra-ui/react';
+import React, { useContext, useEffect } from 'react';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import Logo from '../components/Layout/Logo';
@@ -10,12 +10,12 @@ export default function Home(): JSX.Element {
   const { register, handleSubmit, formState } = useForm();
   const toast = useToast();
   const { colorMode, toggleColorMode } = useColorMode();
-  
+
   useEffect(() => {
     if (colorMode != "dark") {
       toggleColorMode();
     }
-   }, []);
+  }, []);
 
   async function handleSignIn(data) {
     await signIn(data).catch(function (error) {
@@ -29,17 +29,107 @@ export default function Home(): JSX.Element {
 
   return (
     <>
-      <Flex w="100vw" h="100vh" overflow="hidden" justify="center" align="center" position="relative">
-        <Box src="/bannerLogin.png" position="absolute" w="150vw" h="150vh" backgroundSize="cover" backgroundPosition="center"  backgroundImage="url('/bannerLogin.png')"></Box>
-          <Stack borderRadius={16} display="flex" flexDir="column" spacing={4} alignItems="center" justify="center" position="relative" background="gray.800" margin={4} px={8} py={16} w={500} >
-            <Logo />
-            <Input placeholder="Email" type="email" {...register('email')} />
-            <Input placeholder="Senha" type="password" {...register('password')} />
-            <Button width="100%" background="red.500" _hover={{backgroundColor: "red.600"}} onClick={handleSubmit(handleSignIn)} isLoading={formState.isSubmitting}>Entrar</Button>
-            <Link href="/singUp">
-              <Text _hover={{color: "red.500", cursor: "pointer"}}>Criar uma conta</Text>
-            </Link>
-          </Stack>
+      <Flex position="relative">
+        <Flex
+          h="100vh"
+          w="100%"
+          mx="auto"
+          justifyContent="space-around"
+          alignItems="center"
+        >
+          <Flex
+            alignItems="center"
+            justifyContent="center"
+            style={{ userSelect: "none" }}
+            w={{ base: "100%", md: "60vw" }}
+            maxW="600px"
+          >
+            <Flex
+              direction="column"
+              w="100%"
+              background="transparent"
+              p="48px"
+              mt={{ md: "150px", lg: "80px" }}
+            >
+              <Image src="/logo.svg" w="80px" mb={4} />
+              <Heading color="red.500" fontSize="32px" mb={2}>
+                Bem vindo.
+              </Heading>
+              <Text
+                ms="4px"
+                color="gray.200"
+                fontSize="14px"
+              >
+                Insira com seu email e senha para entrar...
+              </Text>
+              <FormControl mt={6}>
+                <FormLabel ms="4px" fontWeight="normal">
+                  Email
+                </FormLabel>
+                <Input
+                  borderRadius="4px"
+                  mb={4}
+                  type="text"
+                  placeholder="gladiators@gmail.com"
+                  size="lg"
+                  {...register('email')}
+
+                />
+                <FormLabel ms="4px" fontWeight="normal">
+                  Senha
+                </FormLabel>
+                <Input
+                  borderRadius="4px"
+                  type="password"
+                  placeholder="*****"
+                  size="lg"
+                  {...register('password')}
+                />
+                <Button
+                  type="submit"
+                  bg="red.500"
+                  w="100%"
+                  h="45"
+                  mb="20px"
+                  color="white"
+                  mt="20px"
+                  _hover={{
+                    bg: "red.600",
+                  }}
+                  _active={{
+                    bg: "red.400",
+                  }}
+                  onClick={handleSubmit(handleSignIn)} isLoading={formState.isSubmitting}
+                >
+                  Entrar
+                </Button>
+              </FormControl>
+              <Flex
+                flexDirection="column"
+                justifyContent="center"
+                alignItems="center"
+                maxW="100%"
+                mt="0px"
+              >
+                <Link href="/singUp">
+                  <Text color="gray.600" fontWeight="medium">
+                    Ainda não tem uma conta?
+                    <ChakraLink color="red" ms="5px" fontWeight="bold">
+                      Clique aqui
+                    </ChakraLink >
+                  </Text>
+                  </Link>
+              </Flex>
+            </Flex>
+          </Flex>
+          <Box
+            display={{ base: "none", lg: "flex" }}
+            overflowX="hidden"
+            w="40vw"
+          >
+            <Image src="/loginIllustration.svg" />
+          </Box>
+        </Flex>
       </Flex>
     </>
   );

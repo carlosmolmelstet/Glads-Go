@@ -132,12 +132,14 @@ export function FormAddImage({ closeModal }: FormAddImageProps): JSX.Element {
             {...register('image')}
             error={errors.image}
           />
-          <TextInput
-            ml={4}
-            placeholder="Nome do usuario"
-            {...register('name', formValidations.name)}
-            error={errors.name}
-          />
+          <Box ml={4} w="100%">
+            <TextInput
+              placeholder="Nome do usuario"
+              label="Nome"
+              {...register('name', formValidations.name)}
+              error={errors.name}
+            />
+          </Box>
         </Flex>
         <SimpleGrid columns={2} spacing={4}>
           <Select
@@ -156,12 +158,14 @@ export function FormAddImage({ closeModal }: FormAddImageProps): JSX.Element {
             error={errors.phone}
           />
           <TextInput
-            placeholder="Email"
+            placeholder="gladiators@gmail.com"
+            label="Email"
             {...register('email', formValidations.email)}
             error={errors.email}
           />
           <TextInput
-            placeholder="Senha"
+            placeholder="******"
+            label="Senha"
             {...register('password', formValidations.password)}
             error={errors.password}
             type="password"
