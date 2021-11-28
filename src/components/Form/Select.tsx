@@ -1,25 +1,26 @@
 import React, { forwardRef, ForwardRefRenderFunction } from 'react';
 import { FieldError } from 'react-hook-form';
-import InputMask from "react-input-mask";
 import {
   FormControl,
   FormErrorMessage,
   FormLabel,
   Icon,
-  Input as ChakraInput,
-  InputProps as ChakraInputProps,
+  Select as ChakraSelect,
+  SelectProps as ChakraSelectProps,
   Tooltip,
 } from '@chakra-ui/react';
 import { FiAlertCircle } from 'react-icons/fi';
+import SelectData from '../../interfaces/Form/SelectData';
 
-interface InputProps extends ChakraInputProps {
+interface SelectProps extends ChakraSelectProps {
   name: string;
   error?: FieldError;
   label?: string;
+  data: Array<SelectData<any>>
 }
 
-const TextInputBase: ForwardRefRenderFunction<HTMLInputElement, InputProps> = (
-  { name, error = null, label = "", ...rest },
+const BaseSelect: ForwardRefRenderFunction<HTMLSelectElement, SelectProps> = (
+  { name, error = null, label = "", data, ...rest },
   ref
 ) => {
   return (
@@ -32,13 +33,17 @@ const TextInputBase: ForwardRefRenderFunction<HTMLInputElement, InputProps> = (
       <FormLabel ms="4px" fontWeight="normal">
         {label}
       </FormLabel>
-      <ChakraInput
+      <ChakraSelect
+        placeholder="Posição"
         aria-label={name}
         name={name}
         ref={ref}
-        borderRadius="4px"
         {...rest}
-      />
+      >
+        {data.map(item => (
+          <option key={item.id} value={item.id}>{item.description}</option>
+        ))}
+      </ChakraSelect>
       {!!error && (
         <Tooltip label={error.message} bg="red.500">
           <FormErrorMessage ml="auto" mr={2} mt={-7} zIndex="tooltip">
@@ -47,7 +52,7 @@ const TextInputBase: ForwardRefRenderFunction<HTMLInputElement, InputProps> = (
         </Tooltip>
       )}
     </FormControl>
-  );
+  )
 };
 
-export const TextInput = forwardRef(TextInputBase);
+export const Select = forwardRef(BaseSelect);

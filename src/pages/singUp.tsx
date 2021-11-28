@@ -1,10 +1,10 @@
-import { Button, Box, Input, Flex, Stack, useToast, useColorMode, Text, Image } from '@chakra-ui/react';
+import { Button, Box, Input, Flex, Stack, useToast, useColorMode, Text, Image, Container } from '@chakra-ui/react';
 import { useContext, useEffect } from 'react';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import Logo from '../components/Layout/Logo';
 import { AuthContext } from '../context/AuthContext';
-import { FormAddImage } from '../components/Form/FormAddImage';
+import { FormAddUser } from '../components/Form/FormAddUser';
 import Router from 'next/router'
 
 export default function Home(): JSX.Element {
@@ -29,11 +29,11 @@ export default function Home(): JSX.Element {
   }
 
   return (
-    <>
-      <Image src="/logo.svg" w="50px" mb={4} position="absolute" top={4} left={4} />
-      <Flex w="100vw" h="100vh" overflow="hidden" justify="center" align="center" position="relative">
-            <FormAddImage closeModal={() => Router.push('/')}/>
-      </Flex>
-    </>
+    <Box position="relative">
+      <Image src="/logo.svg" w="50px" m={4}  />
+      <Container maxW="container.xl" mt={20} overflow="hidden" justify="center" align="center" position="relative">
+            <FormAddUser closeModal={() => Router.push('/')}/>
+      </Container>
+    </Box>
   );
 }

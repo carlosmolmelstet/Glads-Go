@@ -7,8 +7,7 @@ import {
   ModalCloseButton,
   useColorModeValue
 } from '@chakra-ui/react';
-
-import { FormAddImage } from '../Form/FormAddImage';
+import { FormAddUser } from '../Form/FormAddUser';
 
 interface ModalAddUserProps {
   isOpen: boolean;
@@ -24,13 +23,12 @@ export function ModalAddUser({
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={handleCloseModal} isCentered size="2xl">
+    <Modal isOpen={isOpen} onClose={handleCloseModal} isCentered size="6xl">
       <ModalOverlay />
       <ModalContent bgColor={useColorModeValue("gray.50", "gray.800")} >
-        <ModalHeader fontSize="2xl">Novo usuario</ModalHeader>
         <ModalCloseButton />
-        <ModalBody>
-          <FormAddImage closeModal={handleCloseModal} />
+        <ModalBody >
+          <FormAddUser closeModal={handleCloseModal} />
         </ModalBody>
       </ModalContent>
     </Modal>
