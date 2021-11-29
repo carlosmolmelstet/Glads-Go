@@ -16,7 +16,7 @@ interface InputProps extends ChakraInputProps {
   name: string;
   error?: FieldError;
   label?: string;
-  type: "text" | "phone" | "password";
+  type: "text" | "phone" | "password" | "date";
 }
 
 const BaseInput: ForwardRefRenderFunction<HTMLInputElement, InputProps> = (
@@ -97,6 +97,35 @@ const BaseInput: ForwardRefRenderFunction<HTMLInputElement, InputProps> = (
           name={name}
           ref={ref}
           type="password"
+          borderRadius="4px"
+          {...rest}
+        />
+        {!!error && (
+          <Tooltip label={error.message} bg="red.500">
+            <FormErrorMessage ml="auto" mr={2} mt={-7} zIndex="tooltip">
+              <Icon as={FiAlertCircle} color="red.500" w={4} h={4} />
+            </FormErrorMessage>
+          </Tooltip>
+        )}
+      </FormControl>
+    );
+  }
+  else if (type == "date") {
+    return (
+      <FormControl
+        display="flex"
+        flexDirection="column"
+        alignItems="start"
+        isInvalid={!!error}
+      >
+        <FormLabel ms="4px" fontWeight="normal">
+          {label}
+        </FormLabel>
+        <ChakraInput
+          aria-label={name}
+          name={name}
+          ref={ref}
+          type="date"
           borderRadius="4px"
           {...rest}
         />

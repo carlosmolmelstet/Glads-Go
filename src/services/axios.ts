@@ -6,7 +6,7 @@ export function getAPIClient(ctx?: any) {
   let development = process.env.NODE_ENV !== 'production';
 
   const api = axios.create({
-    baseURL: "https://api-glads-go.herokuapp.com/api"
+    baseURL: "https://localhost:44395/api"
   })
 
   if (token) {

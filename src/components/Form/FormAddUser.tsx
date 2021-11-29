@@ -283,7 +283,7 @@ export function FormAddUser({ closeModal }: FormAddUserProps): JSX.Element {
             <Input
               placeholder="1.88"
               label="Nascimento"
-              type="text"
+              type="date"
               {...register('birthDate', formValidations.birthDate)}
               error={errors.birthDate}
             />
