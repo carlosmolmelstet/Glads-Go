@@ -16,7 +16,7 @@ interface InputProps extends ChakraInputProps {
   name: string;
   error?: FieldError;
   label?: string;
-  type: "text" | "phone" | "password" | "date";
+  type: "text" | "phone" | "password" | "date" | "hidden";
 }
 
 const BaseInput: ForwardRefRenderFunction<HTMLInputElement, InputProps> = (
@@ -26,33 +26,33 @@ const BaseInput: ForwardRefRenderFunction<HTMLInputElement, InputProps> = (
   if (type == "phone") {
     return (
       <FormControl
-      display="flex"
-      flexDirection="column"
-      alignItems="start"
-      isInvalid={!!error}
-    >
-      <FormLabel ms="4px" fontWeight="normal">
-        {label}
-      </FormLabel>
-      <ChakraInput
-        as={InputMask}
-        mask="(99) 99999-9999"
-        aria-label={name}
-        name={name}
-        ref={ref}
-        size="md"
-        borderRadius="4px"
-        {...rest}
-      />
+        display="flex"
+        flexDirection="column"
+        alignItems="start"
+        isInvalid={!!error}
+      >
+        <FormLabel ms="4px" fontWeight="normal">
+          {label}
+        </FormLabel>
+        <ChakraInput
+          as={InputMask}
+          mask="(99) 99999-9999"
+          aria-label={name}
+          name={name}
+          ref={ref}
+          size="md"
+          borderRadius="4px"
+          {...rest}
+        />
 
-      {!!error && (
-        <Tooltip label={error.message} bg="red.500">
-          <FormErrorMessage ml="auto" mr={2} mt={-7} zIndex="tooltip">
-            <Icon as={FiAlertCircle} color="red.500" w={4} h={4} />
-          </FormErrorMessage>
-        </Tooltip>
-      )}
-    </FormControl>
+        {!!error && (
+          <Tooltip label={error.message} bg="red.500">
+            <FormErrorMessage ml="auto" mr={2} mt={-7} zIndex="tooltip">
+              <Icon as={FiAlertCircle} color="red.500" w={4} h={4} />
+            </FormErrorMessage>
+          </Tooltip>
+        )}
+      </FormControl>
     );
   } else if (type == "text") {
     return (
@@ -137,6 +137,13 @@ const BaseInput: ForwardRefRenderFunction<HTMLInputElement, InputProps> = (
           </Tooltip>
         )}
       </FormControl>
+    );
+  } else if (type == "hidden") {
+    return (
+        <input
+          type="hidden"
+          ref={ref}
+        />
     );
   }
 };

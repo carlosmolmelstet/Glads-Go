@@ -9,6 +9,7 @@ import User from '../../interfaces/users/User';
 import Position from '../../interfaces/positions/Position';
 import { Select } from './Select';
 import SelectData from '../../interfaces/Form/SelectData';
+import { EmergencyContacts } from '../EmergencyContacts/EmergencyContacts';
 
 interface FormAddUserProps {
   closeModal: () => void;
@@ -39,6 +40,17 @@ export function FormAddUser({ closeModal }: FormAddUserProps): JSX.Element {
 
   const formValidations = {
     name: {
+      required: 'Nome é obrigatório',
+      minLength: {
+        value: 2,
+        message: 'Mínimo de 3 caracteres',
+      },
+      maxLength: {
+        value: 50,
+        message: 'Máximo de 50 caracteres',
+      },
+    },
+    surname: {
       required: 'Nome é obrigatório',
       minLength: {
         value: 2,
@@ -115,7 +127,7 @@ export function FormAddUser({ closeModal }: FormAddUserProps): JSX.Element {
         message: 'Máximo de 14 caracteres',
       },
     },
-    address : {
+    address: {
       required: 'Rua é obrigatório',
       minLength: {
         value: 2,
@@ -126,7 +138,7 @@ export function FormAddUser({ closeModal }: FormAddUserProps): JSX.Element {
         message: 'Máximo de 14 caracteres',
       },
     },
-    addressNumber : {
+    addressNumber: {
       required: 'Numero é obrigatório',
       minLength: {
         value: 2,
@@ -137,7 +149,7 @@ export function FormAddUser({ closeModal }: FormAddUserProps): JSX.Element {
         message: 'Máximo de 14 caracteres',
       },
     },
-    city : {
+    city: {
       required: 'cidade é obrigatório',
       minLength: {
         value: 2,
@@ -148,7 +160,7 @@ export function FormAddUser({ closeModal }: FormAddUserProps): JSX.Element {
         message: 'Máximo de 14 caracteres',
       },
     },
-    uf : {
+    state: {
       required: 'Estado é obrigatório',
       minLength: {
         value: 2,
@@ -187,6 +199,12 @@ export function FormAddUser({ closeModal }: FormAddUserProps): JSX.Element {
         message: 'Máximo de 65 caracteres',
       },
     },
+    jerseyNumber: {
+      maxLength: {
+        value: 3,
+        message: 'Máximo de 3 caracteres',
+      }
+    },
     confirmPassword: {
       required: 'confirmação da senha é obrigatório',
       minLength: {
@@ -219,6 +237,7 @@ export function FormAddUser({ closeModal }: FormAddUserProps): JSX.Element {
   );
 
   const onSubmit = async (data: User): Promise<void> => {
+    console.log(data);
     try {
       await mutation.mutateAsync(data);
       toast({
@@ -255,13 +274,22 @@ export function FormAddUser({ closeModal }: FormAddUserProps): JSX.Element {
               {...register('image')}
               error={errors.image}
             />
-            <Box ml={4} w="100%">
+            <Box ml={4} w="50%">
               <Input
-                placeholder="Nome do usuario"
+                placeholder="Nome"
                 label="Nome"
                 type="text"
                 {...register('name', formValidations.name)}
                 error={errors.name}
+              />
+            </Box>
+            <Box ml={4} w="50%">
+              <Input
+                placeholder="Sobrenome"
+                label="Nome"
+                type="text"
+                {...register('surname', formValidations.surname)}
+                error={errors.surname}
               />
             </Box>
           </Flex>
@@ -307,6 +335,12 @@ export function FormAddUser({ closeModal }: FormAddUserProps): JSX.Element {
               {...register('phone', formValidations.phone)}
               error={errors.phone}
             />
+            <Input
+              label="Numero da Camisa"
+              type="text"
+              {...register('jerseyNumber', formValidations.jerseyNumber)}
+              error={errors.jerseyNumber}
+            />
             <Select
               label="Posição"
               {...register('positionId', formValidations.positionId)}
@@ -320,7 +354,7 @@ export function FormAddUser({ closeModal }: FormAddUserProps): JSX.Element {
         <Heading mt={8} >Endereço</Heading>
         <Divider mb={8} mt={4} />
         <Stack spacing={4} w="100%">
-        <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={4}>
+          <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={4}>
             <Input
               label="CEP"
               type="text"
@@ -345,11 +379,11 @@ export function FormAddUser({ closeModal }: FormAddUserProps): JSX.Element {
               {...register('city', formValidations.city)}
               error={errors.city}
             />
-             <Input
+            <Input
               label="Estado"
               type="text"
-              {...register('uf', formValidations.uf)}
-              error={errors.uf}
+              {...register('state', formValidations.state)}
+              error={errors.state}
             />
           </SimpleGrid>
         </Stack>
@@ -358,7 +392,7 @@ export function FormAddUser({ closeModal }: FormAddUserProps): JSX.Element {
         <Heading mt={8}>Conta</Heading>
         <Divider mb={8} mt={4} />
         <Stack spacing={4} w="100%">
-        <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={4}>
+          <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={4}>
             <Input
               placeholder="gladiators@gmail.com"
               label="Email"
@@ -382,6 +416,11 @@ export function FormAddUser({ closeModal }: FormAddUserProps): JSX.Element {
             />
           </SimpleGrid>
         </Stack>
+      </Flex>
+      <Flex direction="column" align="flex-start" w="100%">
+        <Heading mt={8}>Contatos de emergência</Heading>
+        <Divider mb={8} mt={4} />
+        <EmergencyContacts formState={formState} register={register} />
       </Flex>
       <Flex justify="flex-end" mt={4}>
         <Button
