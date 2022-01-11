@@ -42,14 +42,13 @@ export default function Home(): JSX.Element {
   const tableLg = useBreakpointValue({ base: true, lg: false });
   const tableXl = useBreakpointValue({ base: true, xl: false });
   const pageSize = 10;
-  const [page, setPage] = useState(1)
+  const [page, setPage] = useState(1);
+  const [editUserId, setEditUserId] = useState<string>("");
   const [userProfile, setUserProfile] = useState({} as UserProfile);
-  const { user  } = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
 
   useEffect(() => {
-    console.log(user);
-
-    if(user) {
+    if (user) {
       setUserProfile({
         name: user.name,
         email: user.email,
@@ -57,7 +56,7 @@ export default function Home(): JSX.Element {
         positionName: user.position?.name,
       } as UserProfile);
     }
-   }, [user]);
+  }, [user]);
 
   async function fetchUsers(pageParam: number): Promise<ResponseTable<User>> {
     const { data } = await api.post(`user/Filter`, {
@@ -82,6 +81,17 @@ export default function Home(): JSX.Element {
     isFetching
   } = useQuery(['users', page], () => fetchUsers(page), { keepPreviousData: true, staleTime: 1000 * 60 });
 
+
+  function editUser(userId: string) {
+    setEditUserId(userId);
+    onOpen();
+  }
+
+  function createUser() {
+    setEditUserId("");
+    onOpen();
+  }
+
   if (isLoading && !isError) {
     return <Loading />;
   }
@@ -90,16 +100,17 @@ export default function Home(): JSX.Element {
     return <Error />;
   }
 
+
   return (
     <LayoutDashboard profile={userProfile}>
       <Box>
-        <ModalAddUser isOpen={isOpen} onClose={onClose} />
+        <ModalAddUser isOpen={isOpen} onClose={onClose} userId={editUserId} />
         <Flex justify="space-between">
           <Flex align="center">
             <Search />
             {!isLoading && isFetching && <Spinner ml={4} size="sm" colorScheme="gray" />}
           </Flex>
-          <Button background="red.500" _hover={{backgroundColor: "red.600"}} onClick={() => onOpen()}>Adicionar</Button>
+          <Button background="red.500" _hover={{ backgroundColor: "red.600" }} onClick={() => createUser()}>Adicionar</Button>
         </Flex>
         <Table >
           <Thead >
@@ -151,7 +162,7 @@ export default function Home(): JSX.Element {
                 <Td>
                   <HStack spacing={2}>
                     <ButtonAction title="editar" variant="blue" click={() => {
-                      alert("editar")
+                      editUser(user.id);
                     }}>
                       <Icon as={FiEdit} fontSize={14} />
                     </ButtonAction>

@@ -13,4 +13,5 @@ export default interface User {
     email: string;
     imageUrl?: string;
     id: string;
+    birthDate: string;
 }

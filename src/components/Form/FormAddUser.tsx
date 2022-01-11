@@ -13,31 +13,17 @@ import { EmergencyContacts } from '../EmergencyContacts/EmergencyContacts';
 
 interface FormAddUserProps {
   closeModal: () => void;
+  userId?: string;
 }
 
-export function FormAddUser({ closeModal }: FormAddUserProps): JSX.Element {
+export function FormAddUser({ closeModal, userId }: FormAddUserProps): JSX.Element {
   const [imageUrl, setImageUrl] = useState('');
   const [localImageUrl, setLocalImageUrl] = useState('');
   const [positions, setPositions] = useState<SelectData<string>[]>([]);
   const toast = useToast();
   const queryClient = useQueryClient();
-  const { register, handleSubmit, reset, formState, setError, trigger } = useForm();
+  const { register, handleSubmit, reset, formState, setError, trigger, setValue, setFocus } = useForm();
   const { errors } = formState;
-
-  useEffect(() => {
-    async function fetchPositions() {
-      const { data } = await api.get<Position[]>('User/Positions');
-      const listPositions: SelectData<string>[] = data.map(item => {
-        return {
-          id: item.id,
-          description: item.name
-        };
-      });
-      setPositions(listPositions);
-    }
-    fetchPositions();
-  }, []);
-
   const formValidations = {
     name: {
       required: 'Nome é obrigatório',
@@ -204,19 +190,36 @@ export function FormAddUser({ closeModal }: FormAddUserProps): JSX.Element {
         value: 3,
         message: 'Máximo de 3 caracteres',
       }
-    },
-    confirmPassword: {
-      required: 'confirmação da senha é obrigatório',
-      minLength: {
-        value: 4,
-        message: 'Mínimo de 4 caracteres',
-      },
-      maxLength: {
-        value: 65,
-        message: 'Máximo de 65 caracteres',
-      },
     }
   };
+
+  useEffect(() => {
+    fetchPositions();
+
+    async function fetchPositions() {
+      const { data } = await api.get<Position[]>('User/Positions');
+      const listPositions: SelectData<string>[] = data.map(item => {
+        return {
+          id: item.id,
+          description: item.name
+        };
+      });
+      setPositions(listPositions);
+      if (userId) {
+        fetchUser(userId);
+      }
+    }
+
+    async function fetchUser(userId: string) {
+      const { data } = await api.get<User>('User/' + userId);
+      data.birthDate = data.birthDate.substring(0, 10);
+      const fields = Object.getOwnPropertyNames(formValidations);
+      fields.map(field => setValue(field, data[field]));
+      document.getElementsByName('phone')[0].focus();
+      document.getElementsByName('name')[0].focus();
+      console.log(data);
+    }
+  }, []);
 
   const mutation = useMutation(
     async (user: User) => {
@@ -279,6 +282,7 @@ export function FormAddUser({ closeModal }: FormAddUserProps): JSX.Element {
                 placeholder="Nome"
                 label="Nome"
                 type="text"
+                autoFocus
                 {...register('name', formValidations.name)}
                 error={errors.name}
               />
@@ -406,13 +410,6 @@ export function FormAddUser({ closeModal }: FormAddUserProps): JSX.Element {
               type="password"
               {...register('password', formValidations.password)}
               error={errors.password}
-            />
-            <Input
-              placeholder="******"
-              label="Confirmar senha"
-              type="password"
-              {...register('confirmPassword', formValidations.confirmPassword)}
-              error={errors.confirmPassword}
             />
           </SimpleGrid>
         </Stack>
