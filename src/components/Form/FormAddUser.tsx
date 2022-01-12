@@ -1,4 +1,4 @@
-import { Box, Button, Flex, SimpleGrid, Stack, useToast, Heading, Divider, Text } from '@chakra-ui/react';
+import { Box, Button, Flex, SimpleGrid, Stack, useToast, Heading, Divider, Input as ChakraInput, Spinner } from '@chakra-ui/react';
 import { useForm } from 'react-hook-form';
 import React, { useEffect, useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
@@ -10,6 +10,8 @@ import Position from '../../interfaces/positions/Position';
 import { Select } from './Select';
 import SelectData from '../../interfaces/Form/SelectData';
 import { EmergencyContacts } from '../EmergencyContacts/EmergencyContacts';
+import EmergencyContact from '../../interfaces/EmergencyContacts/EmergencyContact';
+import { Loading } from '../Utils/Loading';
 
 interface FormAddUserProps {
   closeModal: () => void;
@@ -19,12 +21,20 @@ interface FormAddUserProps {
 export function FormAddUser({ closeModal, userId }: FormAddUserProps): JSX.Element {
   const [imageUrl, setImageUrl] = useState('');
   const [localImageUrl, setLocalImageUrl] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
   const [positions, setPositions] = useState<SelectData<string>[]>([]);
+  const [contacts, setContacts] = useState<EmergencyContact[]>([]);
   const toast = useToast();
   const queryClient = useQueryClient();
-  const { register, handleSubmit, reset, formState, setError, trigger, setValue, setFocus } = useForm();
+  const { register, handleSubmit, reset, formState, setError, trigger, setValue } = useForm();
   const { errors } = formState;
   const formValidations = {
+    id: {
+      maxLength: {
+        value: 50,
+        message: 'id invalido',
+      },
+    },
     name: {
       required: 'Nome é obrigatório',
       minLength: {
@@ -206,8 +216,10 @@ export function FormAddUser({ closeModal, userId }: FormAddUserProps): JSX.Eleme
       });
       setPositions(listPositions);
       if (userId) {
-        fetchUser(userId);
+        await fetchUser(userId);
       }
+
+      setIsLoading(false);
     }
 
     async function fetchUser(userId: string) {
@@ -217,8 +229,10 @@ export function FormAddUser({ closeModal, userId }: FormAddUserProps): JSX.Eleme
       fields.map(field => setValue(field, data[field]));
       document.getElementsByName('phone')[0].focus();
       document.getElementsByName('name')[0].focus();
-      console.log(data);
+      setContacts(data.emergencyContacts);
     }
+
+
   }, []);
 
   const mutation = useMutation(
@@ -240,7 +254,6 @@ export function FormAddUser({ closeModal, userId }: FormAddUserProps): JSX.Eleme
   );
 
   const onSubmit = async (data: User): Promise<void> => {
-    console.log(data);
     try {
       await mutation.mutateAsync(data);
       toast({
@@ -261,187 +274,196 @@ export function FormAddUser({ closeModal, userId }: FormAddUserProps): JSX.Eleme
     }
   };
 
+
   return (
-    <Box as="form" width="100%" onSubmit={handleSubmit(onSubmit)} mb={4}>
-      <Flex direction="column" align="flex-start" w="100%">
-        <Heading >Informações Pessoais</Heading>
-        <Divider mb={8} mt={4} />
-        <Stack spacing={4} w="100%">
-          <Flex>
-            <FileInput
-              setImageUrl={setImageUrl}
-              localImageUrl={localImageUrl}
-              setLocalImageUrl={setLocalImageUrl}
-              setError={setError}
-              trigger={trigger}
-              {...register('image')}
-              error={errors.image}
-            />
-            <Box ml={4} w="50%">
-              <Input
-                placeholder="Nome"
-                label="Nome"
-                type="text"
-                autoFocus
-                {...register('name', formValidations.name)}
-                error={errors.name}
+    <>
+      {isLoading && (
+        <Flex bg="gray.800" position="absolute" w="100%" top="0" left="0" bottom="0" justify="center" align="center" zIndex="overlay" borderRadius={8}>
+          <Loading />
+        </Flex>
+      )}
+      <Box as="form" width="100%" onSubmit={handleSubmit(onSubmit)} mb={4}>
+        <Flex direction="column" align="flex-start" w="100%">
+          <Heading >Informações Pessoais</Heading>
+          <Divider mb={8} mt={4} />
+          <Stack spacing={4} w="100%">
+            <Flex>
+              {userId && (<ChakraInput type="hidden" {...register('id')} />)}
+              <FileInput
+                setImageUrl={setImageUrl}
+                localImageUrl={localImageUrl}
+                setLocalImageUrl={setLocalImageUrl}
+                setError={setError}
+                trigger={trigger}
+                {...register('image')}
+                error={errors.image}
               />
-            </Box>
-            <Box ml={4} w="50%">
+              <Box ml={4} w="50%">
+                <Input
+                  placeholder="Nome"
+                  label="Nome"
+                  type="text"
+                  autoFocus
+                  {...register('name', formValidations.name)}
+                  error={errors.name}
+                />
+              </Box>
+              <Box ml={4} w="50%">
+                <Input
+                  placeholder="Sobrenome"
+                  label="Nome"
+                  type="text"
+                  {...register('surname', formValidations.surname)}
+                  error={errors.surname}
+                />
+              </Box>
+            </Flex>
+            <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={4}>
               <Input
-                placeholder="Sobrenome"
-                label="Nome"
+                placeholder="1.88"
+                label="CPF"
                 type="text"
-                {...register('surname', formValidations.surname)}
-                error={errors.surname}
+                {...register('cpf', formValidations.cpf)}
+                error={errors.cpf}
               />
-            </Box>
-          </Flex>
-          <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={4}>
-            <Input
-              placeholder="1.88"
-              label="CPF"
-              type="text"
-              {...register('cpf', formValidations.cpf)}
-              error={errors.cpf}
-            />
-            <Input
-              placeholder="1.88"
-              label="RG"
-              type="text"
-              {...register('rg', formValidations.rg)}
-              error={errors.rg}
-            />
-            <Input
-              placeholder="1.88"
-              label="Nascimento"
-              type="date"
-              {...register('birthDate', formValidations.birthDate)}
-              error={errors.birthDate}
-            />
-            <Input
-              placeholder="1.88"
-              label="Altura"
-              type="text"
-              {...register('height', formValidations.height)}
-              error={errors.height}
-            />
-            <Input
-              placeholder="80"
-              label="Peso"
-              type="text"
-              {...register('weight', formValidations.weight)}
-              error={errors.weight}
-            />
-            <Input
-              label="Telefone"
-              type="phone"
-              {...register('phone', formValidations.phone)}
-              error={errors.phone}
-            />
-            <Input
-              label="Numero da Camisa"
-              type="text"
-              {...register('jerseyNumber', formValidations.jerseyNumber)}
-              error={errors.jerseyNumber}
-            />
-            <Select
-              label="Posição"
-              {...register('positionId', formValidations.positionId)}
-              error={errors.positionId}
-              data={positions}
-            />
-          </SimpleGrid>
-        </Stack>
-      </Flex>
-      <Flex direction="column" align="flex-start" w="100%">
-        <Heading mt={8} >Endereço</Heading>
-        <Divider mb={8} mt={4} />
-        <Stack spacing={4} w="100%">
-          <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={4}>
-            <Input
-              label="CEP"
-              type="text"
-              {...register('cep', formValidations.cep)}
-              error={errors.cep}
-            />
-            <Input
-              label="Rua"
-              type="text"
-              {...register('address', formValidations.address)}
-              error={errors.address}
-            />
-            <Input
-              label="Numero"
-              type="text"
-              {...register('addressNumber', formValidations.addressNumber)}
-              error={errors.addressNumber}
-            />
-            <Input
-              label="Cidade"
-              type="text"
-              {...register('city', formValidations.city)}
-              error={errors.city}
-            />
-            <Input
-              label="Estado"
-              type="text"
-              {...register('state', formValidations.state)}
-              error={errors.state}
-            />
-          </SimpleGrid>
-        </Stack>
-      </Flex>
-      <Flex direction="column" align="flex-start" w="100%">
-        <Heading mt={8}>Conta</Heading>
-        <Divider mb={8} mt={4} />
-        <Stack spacing={4} w="100%">
-          <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={4}>
-            <Input
-              placeholder="gladiators@gmail.com"
-              label="Email"
-              type="text"
-              {...register('email', formValidations.email)}
-              error={errors.email}
-            />
-            <Input
-              placeholder="******"
-              label="Senha"
-              type="password"
-              {...register('password', formValidations.password)}
-              error={errors.password}
-            />
-          </SimpleGrid>
-        </Stack>
-      </Flex>
-      <Flex direction="column" align="flex-start" w="100%">
-        <Heading mt={8}>Contatos de emergência</Heading>
-        <Divider mb={8} mt={4} />
-        <EmergencyContacts formState={formState} register={register} />
-      </Flex>
-      <Flex justify="flex-end" mt={4}>
-        <Button
-          onClick={closeModal}
-          type="button"
-          float="right"
-          py={6}
-          mr={4}
-        >
-          Cancelar
-        </Button>
-        <Button
-          isLoading={formState.isSubmitting}
-          isDisabled={formState.isSubmitting}
-          type="submit"
-          float="right"
-          background="red.500"
-          _hover={{ backgroundColor: "red.600" }}
-          py={6}
-        >
-          Criar usuário
-        </Button>
-      </Flex>
-    </Box>
+              <Input
+                placeholder="1.88"
+                label="RG"
+                type="text"
+                {...register('rg', formValidations.rg)}
+                error={errors.rg}
+              />
+              <Input
+                placeholder="1.88"
+                label="Nascimento"
+                type="date"
+                {...register('birthDate', formValidations.birthDate)}
+                error={errors.birthDate}
+              />
+              <Input
+                placeholder="1.88"
+                label="Altura"
+                type="text"
+                {...register('height', formValidations.height)}
+                error={errors.height}
+              />
+              <Input
+                placeholder="80"
+                label="Peso"
+                type="text"
+                {...register('weight', formValidations.weight)}
+                error={errors.weight}
+              />
+              <Input
+                label="Telefone"
+                type="phone"
+                {...register('phone', formValidations.phone)}
+                error={errors.phone}
+              />
+              <Input
+                label="Numero da Camisa"
+                type="text"
+                {...register('jerseyNumber', formValidations.jerseyNumber)}
+                error={errors.jerseyNumber}
+              />
+              <Select
+                label="Posição"
+                {...register('positionId', formValidations.positionId)}
+                error={errors.positionId}
+                data={positions}
+              />
+            </SimpleGrid>
+          </Stack>
+        </Flex>
+        <Flex direction="column" align="flex-start" w="100%">
+          <Heading mt={8} >Endereço</Heading>
+          <Divider mb={8} mt={4} />
+          <Stack spacing={4} w="100%">
+            <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={4}>
+              <Input
+                label="CEP"
+                type="text"
+                {...register('cep', formValidations.cep)}
+                error={errors.cep}
+              />
+              <Input
+                label="Rua"
+                type="text"
+                {...register('address', formValidations.address)}
+                error={errors.address}
+              />
+              <Input
+                label="Numero"
+                type="text"
+                {...register('addressNumber', formValidations.addressNumber)}
+                error={errors.addressNumber}
+              />
+              <Input
+                label="Cidade"
+                type="text"
+                {...register('city', formValidations.city)}
+                error={errors.city}
+              />
+              <Input
+                label="Estado"
+                type="text"
+                {...register('state', formValidations.state)}
+                error={errors.state}
+              />
+            </SimpleGrid>
+          </Stack>
+        </Flex>
+        <Flex direction="column" align="flex-start" w="100%">
+          <Heading mt={8}>Conta</Heading>
+          <Divider mb={8} mt={4} />
+          <Stack spacing={4} w="100%">
+            <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={4}>
+              <Input
+                placeholder="gladiators@gmail.com"
+                label="Email"
+                type="text"
+                {...register('email', formValidations.email)}
+                error={errors.email}
+              />
+              <Input
+                placeholder="******"
+                label="Senha"
+                type="password"
+                {...register('password', formValidations.password)}
+                error={errors.password}
+              />
+            </SimpleGrid>
+          </Stack>
+        </Flex>
+        <Flex direction="column" align="flex-start" w="100%">
+          <Heading mt={8}>Contatos de emergência</Heading>
+          <Divider mb={8} mt={4} />
+          <EmergencyContacts formState={formState} register={register} data={contacts} userId={userId} />
+        </Flex>
+        <Flex justify="flex-end" mt={4}>
+          <Button
+            onClick={closeModal}
+            type="button"
+            float="right"
+            py={6}
+            mr={4}
+          >
+            Cancelar
+          </Button>
+          <Button
+            isLoading={formState.isSubmitting}
+            isDisabled={formState.isSubmitting}
+            type="submit"
+            float="right"
+            background="red.500"
+            _hover={{ backgroundColor: "red.600" }}
+            py={6}
+          >
+            Criar usuário
+          </Button>
+        </Flex>
+      </Box>
+    </>
   );
 }
 

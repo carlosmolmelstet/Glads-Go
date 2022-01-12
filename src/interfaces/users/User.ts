@@ -1,3 +1,5 @@
+import EmergencyContact from "../EmergencyContacts/EmergencyContact";
+
 interface Position {
     id: string,
     name: string,
@@ -14,4 +16,5 @@ export default interface User {
     imageUrl?: string;
     id: string;
     birthDate: string;
+    emergencyContacts: Array<EmergencyContact>
 }
