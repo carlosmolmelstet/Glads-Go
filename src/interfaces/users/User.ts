@@ -16,5 +16,6 @@ export default interface User {
     imageUrl?: string;
     id: string;
     birthDate: string;
+    points: number;
     emergencyContacts: Array<EmergencyContact>
 }
