@@ -6,9 +6,9 @@ interface Position {
     shortName: string;
 }
 
-
 export default interface User {
     name: string;
+    surname: string;
     positionId: string;
     position?: Position;
     phone: string;

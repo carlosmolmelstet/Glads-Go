@@ -186,13 +186,13 @@ export default function Points(): JSX.Element {
             <Button ml={4} onClick={onSubmit} isLoading={requestIsLoading}>Aplicar</Button>
           </Flex>
         </Flex>
-        <Table >
+        <Table fontSize={windowSmall ? 12 : 16}>
           <Thead >
-            <Tr>
-              <Th>Usuário</Th>
-              <Th w={10}>Pontos</Th>
-              <Th w={10}>Posição</Th>
-              <Th w={20}>Ações</Th>
+            <Tr >
+              <Th fontSize={windowSmall ? 12 : 16}>Usuário</Th>
+              <Th fontSize={windowSmall ? 12 : 16} w={10}>Pontos</Th>
+              <Th fontSize={windowSmall ? 12 : 16} w={10}>Posição</Th>
+              <Th fontSize={windowSmall ? 12 : 16} w={20}>Ações</Th>
             </Tr>
           </Thead>
           <Tbody>
@@ -203,10 +203,11 @@ export default function Points(): JSX.Element {
                     <Avatar
                       size={'sm'}
                       src={user.imageUrl}
-                      name={user.name}
+                      name={user.name + " " + user.surname}
                       mr={4}
+                      display={windowSmall ? "none" : "flex"}
                     />
-                    {user.name}
+                    {user.name + " " + user.surname}
                   </Flex>
                 </Td>
                 <Td textAlign="center">
