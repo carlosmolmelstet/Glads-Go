@@ -31,13 +31,13 @@ export default function SidebarContent({ onClose, ...rest }: SidebarProps) {
 
   return (
     <Box
-      w={{ base: 'full', md: 60 }}
+      w={{ base: 'full', lg: 60 }}
       pos="fixed"
       h="full"
       {...rest}>
       <Flex h="20" alignItems="center" mx="8" justifyContent="space-between">
         <Logo />
-        <CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClose} />
+        <CloseButton display={{ base: 'flex', lg: 'none' }} onClick={onClose} />
       </Flex>
       <Stack spacing={1}>
         {LinkItems.map((link) => (

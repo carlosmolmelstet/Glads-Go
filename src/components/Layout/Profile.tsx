@@ -35,7 +35,7 @@ export default function Profile({profile}: ProfileProps) {
               name={profile.name}
             />
             <VStack
-              display={{ base: 'none', md: 'flex' }}
+              display={{ base: 'none', lg: 'flex' }}
               alignItems="flex-start"
               spacing="1px"
               ml="2">
@@ -44,7 +44,7 @@ export default function Profile({profile}: ProfileProps) {
                 {profile.positionName}
               </Text>
             </VStack>
-            <Box display={{ base: 'none', md: 'flex' }}>
+            <Box display={{ base: 'none', lg: 'flex' }}>
               <FiChevronDown />
             </Box>
           </HStack>

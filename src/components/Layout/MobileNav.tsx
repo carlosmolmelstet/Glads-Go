@@ -29,18 +29,18 @@ interface MobileProps extends FlexProps {
   profile: UserProfile;
 }
 export default function MobileNav({ profile, onOpen, ...rest }: MobileProps) {
-  const hideLogo = useBreakpointValue({ base: false, md: true })
+  const hideLogo = useBreakpointValue({ base: false, lg: true })
 
   return (
     <Flex
-      ml={{ base: 0, md: 60 }}
-      px={{ base: 4, md: 4 }}
+      ml={{ base: 0, lg: 60 }}
+      px={{ base: 4, lg: 4 }}
       height="20"
       alignItems="center"
-      justifyContent={{ base: 'space-between', md: 'flex-end' }}
+      justifyContent={{ base: 'space-between', lg: 'flex-end' }}
       {...rest}>
       <IconButton
-        display={{ base: 'flex', md: 'none' }}
+        display={{ base: 'flex', lg: 'none' }}
         onClick={onOpen}
         variant="outline"
         aria-label="open menu"

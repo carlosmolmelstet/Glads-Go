@@ -4,7 +4,7 @@ import { FiSearch } from "react-icons/fi";
 
 export function Search() {
     return (
-        <InputGroup w={200}>
+        <InputGroup w="100%">
             <InputLeftElement
                 pointerEvents="none"
                 color="gray.400"

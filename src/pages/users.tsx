@@ -112,7 +112,7 @@ export default function Home(): JSX.Element {
           </Flex>
           <Button background="red.500" _hover={{ backgroundColor: "red.600" }} onClick={() => createUser()}>Adicionar</Button>
         </Flex>
-        <Table >
+        <Table maxW="100vw" overflow="hidden">
           <Thead >
             <Tr>
               <Th>Usuário</Th>
@@ -130,7 +130,7 @@ export default function Home(): JSX.Element {
           </Thead>
           <Tbody>
             {data.data.map(user => (
-              <Tr key={user.id}>
+              <Tr key={user.id} wordBreak="break-word">
                 <Td>
                   <Flex align="center">
                     <Avatar

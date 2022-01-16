@@ -17,6 +17,7 @@ import {
   Icon,
   useNumberInput,
   useToast,
+  useBreakpointValue,
 } from '@chakra-ui/react';
 import React, { useContext, useEffect, useState } from 'react';
 import { api } from '../services/api';
@@ -37,6 +38,7 @@ import { QueryClient, useMutation, useQuery } from 'react-query';
 import { queryClient } from '../services/queryClient';
 
 export default function Points(): JSX.Element {
+  const windowSmall = useBreakpointValue({ base: true, sm: false });
   const pageSize = 10;
   const [page, setPage] = useState(1);
   const [requestIsLoading, setRequestIsLoading] = useState(false);
@@ -151,12 +153,12 @@ export default function Points(): JSX.Element {
   return (
     <LayoutDashboard profile={userProfile}>
       <Box>
-        <Flex justify="space-between">
-          <Flex align="center">
+        <Flex justify="space-between" direction={windowSmall ? "column" : "row"} align="center">
+          <Flex align="center" width={windowSmall ? "100%" : 60}>
             <Search />
             {!isLoading && isFetching && <Spinner ml={4} size="sm" colorScheme="gray" />}
           </Flex>
-          <Flex>
+          <Flex mt={windowSmall ? 4 : 0}>
             <Flex maxW='320px' border="1px solid" borderColor="gray.800" borderRadius={8}>
               <Button
                 borderRightRadius={0}
@@ -181,7 +183,7 @@ export default function Points(): JSX.Element {
                 <Icon as={FiPlus} />
               </Button>
             </Flex>
-            <Button ml={8} onClick={onSubmit} isLoading={requestIsLoading}>Aplicar</Button>
+            <Button ml={4} onClick={onSubmit} isLoading={requestIsLoading}>Aplicar</Button>
           </Flex>
         </Flex>
         <Table >
@@ -196,7 +198,7 @@ export default function Points(): JSX.Element {
           <Tbody>
             {data.data.map(user => (
               <Tr key={user.id}>
-                <Td>
+                <Td wordBreak="break-word">
                   <Flex align="center">
                     <Avatar
                       size={'sm'}

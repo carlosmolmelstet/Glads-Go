@@ -23,7 +23,7 @@ export default function LayoutDashboard({children, profile} : LayoutDashboardPro
     <Box minH="100vh" >
       <SidebarContent
         onClose={() => onClose}
-        display={{ base: 'none', md: 'block' }}
+        display={{ base: 'none', lg: 'block' }}
       />
       <Drawer
         autoFocus={false}
@@ -38,7 +38,7 @@ export default function LayoutDashboard({children, profile} : LayoutDashboardPro
         </DrawerContent>
       </Drawer>
       <MobileNav profile={profile} onOpen={onOpen} />
-      <Box ml={{ base: 0, md: 60 }} p="4">
+      <Box ml={{ base: 0, lg: 60 }} p="4">
         {children}
       </Box>
     </Box>
