@@ -96,14 +96,14 @@ export default function Points(): JSX.Element {
     try {
       await mutation.mutateAsync();
       toast({
-        title: 'Usuario cadastrado',
-        description: 'Seu usuario foi cadastrada com sucesso.',
+        title: 'Pontos atualizados',
+        description: 'Os posntos foram atualizados com sucesso',
         status: 'success',
       });
       setRequestIsLoading(false);
     } catch (exception) {
       toast({
-        title: 'Falha no cadastro',
+        title: 'Falha ao atualizar',
         description: exception,
         status: 'error',
       });
