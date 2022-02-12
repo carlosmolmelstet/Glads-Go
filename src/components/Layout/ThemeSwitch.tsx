@@ -1,16 +1,9 @@
-import React from 'react';
-import {
-  useColorModeValue,
-  IconButton,
-  useColorMode,
-} from '@chakra-ui/react';
-import {
-  MdNightlight,
-  MdWbSunny
-} from 'react-icons/md';
+import { IconButton, useColorMode, useColorModeValue } from '@chakra-ui/react'
+import React from 'react'
+import { MdNightlight, MdWbSunny } from 'react-icons/md'
 
 export default function ThemeSwitch() {
-  const { colorMode, toggleColorMode } = useColorMode();
+  const { toggleColorMode } = useColorMode()
 
   return (
     <IconButton
@@ -22,9 +15,9 @@ export default function ThemeSwitch() {
         bg: useColorModeValue('gray.50', 'gray.700')
       }}
       _focus={{
-        boxShadow: "none"
+        boxShadow: 'none'
       }}
       icon={useColorModeValue(<MdWbSunny />, <MdNightlight />)}
     />
-  );
-};
+  )
+}

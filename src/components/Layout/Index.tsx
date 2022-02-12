@@ -1,27 +1,30 @@
-import React, { ReactNode } from 'react';
 import {
   Box,
-  useColorModeValue,
   Drawer,
   DrawerContent,
-  useDisclosure,
-  useColorMode,
-} from '@chakra-ui/react';
-import SidebarContent from './SidebarContent';
-import MobileNav from './MobileNav';
-import UserProfile from '../../interfaces/users/UserProfile';
+  useColorModeValue,
+  useDisclosure
+} from '@chakra-ui/react'
+import React, { ReactNode } from 'react'
+import UserProfile from '../../interfaces/users/UserProfile'
+import MobileNav from './MobileNav'
+import SidebarContent from './SidebarContent'
 
 interface LayoutDashboardProps {
-  children: ReactNode;
-  profile: UserProfile;
+  children: ReactNode
+  profile: UserProfile
 }
 
-export default function LayoutDashboard({children, profile} : LayoutDashboardProps) {
-  const { isOpen, onOpen, onClose } = useDisclosure();
+export default function LayoutDashboard({
+  children,
+  profile
+}: LayoutDashboardProps) {
+  const { isOpen, onOpen, onClose } = useDisclosure()
 
   return (
-    <Box minH="100vh" >
+    <Box minH="100vh">
       <SidebarContent
+        profile={profile}
         onClose={() => onClose}
         display={{ base: 'none', lg: 'block' }}
       />
@@ -32,9 +35,10 @@ export default function LayoutDashboard({children, profile} : LayoutDashboardPro
         onClose={onClose}
         returnFocusOnClose={false}
         onOverlayClick={onClose}
-        size="full">
-        <DrawerContent bg={useColorModeValue("white","gray.900")}>
-          <SidebarContent onClose={onClose} />
+        size="full"
+      >
+        <DrawerContent bg={useColorModeValue('white', 'gray.900')}>
+          <SidebarContent profile={profile} onClose={onClose} />
         </DrawerContent>
       </Drawer>
       <MobileNav profile={profile} onOpen={onOpen} />
@@ -42,5 +46,5 @@ export default function LayoutDashboard({children, profile} : LayoutDashboardPro
         {children}
       </Box>
     </Box>
-  );
+  )
 }

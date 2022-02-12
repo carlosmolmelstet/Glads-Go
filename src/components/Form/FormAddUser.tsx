@@ -1,4 +1,15 @@
-import { Box, Button, Flex, SimpleGrid, Stack, useToast, Heading, Divider, Input as ChakraInput, Spinner } from '@chakra-ui/react';
+import {
+  Box,
+  Button,
+  Flex,
+  SimpleGrid,
+  Stack,
+  useToast,
+  Heading,
+  Divider,
+  Input as ChakraInput,
+  Spinner,
+} from '@chakra-ui/react';
 import { useForm } from 'react-hook-form';
 import React, { useEffect, useState } from 'react';
 import { useMutation, useQueryClient } from 'react-query';
@@ -18,7 +29,10 @@ interface FormAddUserProps {
   userId?: string;
 }
 
-export function FormAddUser({ closeModal, userId }: FormAddUserProps): JSX.Element {
+export function FormAddUser({
+  closeModal,
+  userId,
+}: FormAddUserProps): JSX.Element {
   const [imageUrl, setImageUrl] = useState('');
   const [localImageUrl, setLocalImageUrl] = useState('');
   const [isLoading, setIsLoading] = useState(true);
@@ -26,7 +40,15 @@ export function FormAddUser({ closeModal, userId }: FormAddUserProps): JSX.Eleme
   const [contacts, setContacts] = useState<EmergencyContact[]>([]);
   const toast = useToast();
   const queryClient = useQueryClient();
-  const { register, handleSubmit, reset, formState, setError, trigger, setValue } = useForm();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState,
+    setError,
+    trigger,
+    setValue,
+  } = useForm();
   const { errors } = formState;
   const formValidations = {
     id: {
@@ -199,8 +221,8 @@ export function FormAddUser({ closeModal, userId }: FormAddUserProps): JSX.Eleme
       maxLength: {
         value: 3,
         message: 'Máximo de 3 caracteres',
-      }
-    }
+      },
+    },
   };
 
   useEffect(() => {
@@ -211,7 +233,7 @@ export function FormAddUser({ closeModal, userId }: FormAddUserProps): JSX.Eleme
       const listPositions: SelectData<string>[] = data.map(item => {
         return {
           id: item.id,
-          description: item.name
+          description: item.name,
         };
       });
       setPositions(listPositions);
@@ -223,7 +245,7 @@ export function FormAddUser({ closeModal, userId }: FormAddUserProps): JSX.Eleme
     }
 
     async function fetchUser(userId: string) {
-      const { data } = await api.get<User>('User/' + userId);
+      const { data } = await api.get<User>(`User/${userId}`);
       data.birthDate = data.birthDate.substring(0, 10);
       const fields = Object.getOwnPropertyNames(formValidations);
       fields.map(field => setValue(field, data[field]));
@@ -231,25 +253,25 @@ export function FormAddUser({ closeModal, userId }: FormAddUserProps): JSX.Eleme
       document.getElementsByName('name')[0].focus();
       setContacts(data.emergencyContacts);
     }
-
-
   }, []);
 
   const mutation = useMutation(
     async (user: User) => {
-      await api.post('User/Save', {
-        ...user,
-        imageUrl: imageUrl
-      }).catch(function (error) {
-        if (error.response) {
-          throw error.response.data;
-        }
-      });;
+      await api
+        .post('User/Save', {
+          ...user,
+          imageUrl,
+        })
+        .catch(function (error) {
+          if (error.response) {
+            throw error.response.data;
+          }
+        });
     },
     {
       onSuccess: () => {
         queryClient.invalidateQueries('users');
-      }
+      },
     }
   );
 
@@ -274,21 +296,31 @@ export function FormAddUser({ closeModal, userId }: FormAddUserProps): JSX.Eleme
     }
   };
 
-
   return (
     <>
       {isLoading && (
-        <Flex bg="gray.800" position="absolute" w="100%" top="0" left="0" bottom="0" justify="center" align="center" zIndex="overlay" borderRadius={8}>
+        <Flex
+          bg="gray.800"
+          position="absolute"
+          w="100%"
+          top="0"
+          left="0"
+          bottom="0"
+          justify="center"
+          align="center"
+          zIndex="overlay"
+          borderRadius={8}
+        >
           <Loading />
         </Flex>
       )}
       <Box as="form" width="100%" onSubmit={handleSubmit(onSubmit)} mb={4}>
         <Flex direction="column" align="flex-start" w="100%">
-          <Heading >Informações Pessoais</Heading>
+          <Heading>Informações Pessoais</Heading>
           <Divider mb={8} mt={4} />
           <Stack spacing={4} w="100%">
             <Flex>
-              {userId && (<ChakraInput type="hidden" {...register('id')} />)}
+              {userId && <ChakraInput type="hidden" {...register('id')} />}
               <FileInput
                 setImageUrl={setImageUrl}
                 localImageUrl={localImageUrl}
@@ -376,7 +408,7 @@ export function FormAddUser({ closeModal, userId }: FormAddUserProps): JSX.Eleme
           </Stack>
         </Flex>
         <Flex direction="column" align="flex-start" w="100%">
-          <Heading mt={8} >Endereço</Heading>
+          <Heading mt={8}>Endereço</Heading>
           <Divider mb={8} mt={4} />
           <Stack spacing={4} w="100%">
             <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} spacing={4}>
@@ -438,7 +470,12 @@ export function FormAddUser({ closeModal, userId }: FormAddUserProps): JSX.Eleme
         <Flex direction="column" align="flex-start" w="100%">
           <Heading mt={8}>Contatos de emergência</Heading>
           <Divider mb={8} mt={4} />
-          <EmergencyContacts formState={formState} register={register} data={contacts} userId={userId} />
+          <EmergencyContacts
+            formState={formState}
+            register={register}
+            data={contacts}
+            userId={userId}
+          />
         </Flex>
         <Flex justify="flex-end" mt={4}>
           <Button
@@ -456,15 +493,13 @@ export function FormAddUser({ closeModal, userId }: FormAddUserProps): JSX.Eleme
             type="submit"
             float="right"
             background="red.500"
-            _hover={{ backgroundColor: "red.600" }}
+            _hover={{ backgroundColor: 'red.600' }}
             py={6}
           >
-            Criar usuário
+            Salvar
           </Button>
         </Flex>
       </Box>
     </>
   );
 }
-
-

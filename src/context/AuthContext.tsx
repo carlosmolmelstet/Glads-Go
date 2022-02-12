@@ -1,60 +1,58 @@
-import { createContext, useEffect, useState } from "react";
-import { setCookie, parseCookies } from 'nookies'
+import React, { createContext, useEffect, useState } from 'react'
 import Router from 'next/router'
+import { parseCookies, setCookie } from 'nookies'
 
-import { api } from "../services/api";
-import User from "../interfaces/users/User";
-import { AxiosResponse } from "axios";
-
+import User from '../interfaces/users/User'
+import { api } from '../services/api'
 type SignInData = {
-  email: string;
-  password: string;
+  email: string
+  password: string
 }
 
 type SignInResponseData = {
-  token: string;
-  user: User;
+  token: string
+  user: User
 }
 
 type AuthContextType = {
-  isAuthenticated: boolean;
-  user: User;
+  isAuthenticated: boolean
+  user: User
   signIn: (data: SignInData) => Promise<void>
 }
-
-
 
 export const AuthContext = createContext({} as AuthContextType)
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState<User | null>(null)
 
-  const isAuthenticated = !!user;
+  const isAuthenticated = !!user
 
   useEffect(() => {
     const { 'glads-token': token } = parseCookies()
 
     if (token) {
       const fetchDataAsync = async () => {
-        const {data} = await api.get<User>('/User/RecoverUserInformation');
+        const { data } = await api.get<User>('/User/RecoverUserInformation')
         setUser(data)
-     }   
-     fetchDataAsync()
+      }
+      fetchDataAsync()
     }
-   }, []);
+  }, [])
 
   async function signIn({ email, password }: SignInData) {
-    const {data : { token, user}} = await api.post<SignInResponseData>("Account/Login", {
+    const {
+      data: { token, user }
+    } = await api.post<SignInResponseData>('Account/Login', {
       email: email,
       password: password
-    } );
+    })
 
     setCookie(undefined, 'glads-token', token, {
-      maxAge: 60 * 60 * 1, // 1 hour
+      maxAge: 60 * 60 * 1 // 1 hour
     })
-    api.defaults.headers['Authorization'] = `Bearer ${token}`;
+    api.defaults.headers.Authorization = `Bearer ${token}`
     setUser(user)
-    Router.push('/users');
+    Router.push('/ranking')
   }
 
   return (

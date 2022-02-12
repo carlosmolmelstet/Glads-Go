@@ -1,26 +1,36 @@
-import React, { ReactNode } from 'react';
-import { Flex, Icon, Link, FlexProps, useColorModeValue } from '@chakra-ui/react';
-import { IconType } from 'react-icons';
+import {
+  Flex,
+  FlexProps,
+  Icon,
+  Link,
+  useColorModeValue
+} from '@chakra-ui/react'
 import NextLink from 'next/link'
-
-import { ReactText } from 'react';
+import React, { ReactText } from 'react'
+import { IconType } from 'react-icons'
 
 interface NavItemProps extends FlexProps {
-  icon: IconType;
-  children: ReactText;
-  isActive?: boolean;
-  route: string;
+  icon: IconType
+  children: ReactText
+  isActive?: boolean
+  route: string
 }
 
-export default function NavItem({ icon, isActive = false, route, children, ...rest }: NavItemProps) {
-
+export default function NavItem({
+  icon,
+  isActive = false,
+  route,
+  children,
+  ...rest
+}: NavItemProps) {
   return (
     <NextLink href={route}>
       <Link
         style={{ textDecoration: 'none' }}
         _focus={{
-          boxShadow: "none"
-        }}>
+          boxShadow: 'none'
+        }}
+      >
         <Flex
           align="center"
           p="4"
@@ -29,21 +39,15 @@ export default function NavItem({ icon, isActive = false, route, children, ...re
           role="group"
           cursor="pointer"
           _hover={{
-            bg: useColorModeValue("gray.50", "gray.700"),
+            bg: useColorModeValue('gray.50', 'gray.700')
           }}
-          bg={isActive ? useColorModeValue("gray.50", "gray.700") : ""}
-          {...rest}>
-          {icon && (
-            <Icon
-              mr="4"
-              fontSize="16"
-              as={icon}
-            />
-          )}
+          bg={isActive ? useColorModeValue('gray.50', 'gray.700') : ''}
+          {...rest}
+        >
+          {icon && <Icon mr="4" fontSize="16" as={icon} />}
           {children}
         </Flex>
       </Link>
     </NextLink>
-
-  );
-};
+  )
+}

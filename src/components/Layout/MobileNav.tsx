@@ -1,32 +1,20 @@
-import React from 'react';
 import {
-  IconButton,
-  Avatar,
-  Box,
   Flex,
-  HStack,
-  VStack,
-  useColorModeValue,
-  Text,
   FlexProps,
-  Menu,
-  MenuButton,
-  MenuDivider,
-  MenuItem,
-  MenuList,
-  useBreakpointValue,
-
-} from '@chakra-ui/react';
-import { FiMenu } from 'react-icons/fi';
-
-import Profile from './Profile';
-import ThemeSwitch from './ThemeSwitch';
-import Logo from './Logo';
-import UserProfile from '../../interfaces/users/UserProfile';
+  HStack,
+  IconButton,
+  useBreakpointValue
+} from '@chakra-ui/react'
+import React from 'react'
+import { FiMenu } from 'react-icons/fi'
+import UserProfile from '../../interfaces/users/UserProfile'
+import Logo from './Logo'
+import Profile from './Profile'
+import ThemeSwitch from './ThemeSwitch'
 
 interface MobileProps extends FlexProps {
-  onOpen: () => void;
-  profile: UserProfile;
+  onOpen: () => void
+  profile: UserProfile
 }
 export default function MobileNav({ profile, onOpen, ...rest }: MobileProps) {
   const hideLogo = useBreakpointValue({ base: false, lg: true })
@@ -38,7 +26,8 @@ export default function MobileNav({ profile, onOpen, ...rest }: MobileProps) {
       height="20"
       alignItems="center"
       justifyContent={{ base: 'space-between', lg: 'flex-end' }}
-      {...rest}>
+      {...rest}
+    >
       <IconButton
         display={{ base: 'flex', lg: 'none' }}
         onClick={onOpen}
@@ -52,5 +41,5 @@ export default function MobileNav({ profile, onOpen, ...rest }: MobileProps) {
         <Profile profile={profile} />
       </HStack>
     </Flex>
-  );
-};
+  )
+}

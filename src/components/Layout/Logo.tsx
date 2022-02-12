@@ -1,14 +1,21 @@
-import React from "react";
-import { Text } from "@chakra-ui/react";
+import { Text } from '@chakra-ui/react'
+import React from 'react'
 
 interface LogoProps {
-  hide?: boolean;
+  hide?: boolean
 }
 
-export default function Logo({hide = false} : LogoProps) {
+export default function Logo({ hide = false }: LogoProps) {
   return (
-    <Text  display={hide ? "none" : "flex"} letterSpacing="0.2rem" fontSize="2rem">
-      <Text as="span" fontWeight="thin" fontSize="2rem">GLADS</Text>GO
+    <Text
+      display={hide ? 'none' : 'flex'}
+      letterSpacing="0.2rem"
+      fontSize="2rem"
+    >
+      <Text as="span" fontWeight="thin" fontSize="2rem">
+        GLADS
+      </Text>
+      GO
     </Text>
-  );
-};
+  )
+}

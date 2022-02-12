@@ -1,6 +1,7 @@
 export default interface UserProfile {
-    name: string;
-    positionName: string;
-    email: string;
-    imageUrl?: string;
+  name: string
+  positionName: string
+  email: string
+  imageUrl?: string
+  role?: number
 }
