@@ -29,6 +29,7 @@ import { api } from '../services/api'
 export default function Ranking(): JSX.Element {
   const pageSize = 10
   const [page, setPage] = useState(1)
+  const [search, setSearch] = useState('')
   const [userProfile, setUserProfile] = useState({} as UserProfile)
   const { user } = useContext(AuthContext)
 
@@ -44,17 +45,29 @@ export default function Ranking(): JSX.Element {
     }
   }, [user])
 
-  async function fetchUsers(pageParam: number): Promise<ResponseTable<User>> {
+  async function fetchUsers(
+    pageParam: number,
+    search = ''
+  ): Promise<ResponseTable<User>> {
     const { data } = await api.post('user/Filter', {
       page: pageParam,
-      pageSize: pageSize
+      pageSize: pageSize,
+      search: search
     })
     return data
   }
 
+  let timeout = null
+  function searchUsers(search: string) {
+    clearTimeout(timeout)
+    timeout = setTimeout(function () {
+      setSearch(search)
+    }, 1000)
+  }
+
   const { data, isLoading, isError, isFetching } = useQuery(
-    ['users', page],
-    () => fetchUsers(page),
+    ['users', page, search],
+    () => fetchUsers(page, search),
     { keepPreviousData: true, staleTime: 1000 * 60 }
   )
 
@@ -91,7 +104,7 @@ export default function Ranking(): JSX.Element {
       <Box>
         <Flex justify="space-between">
           <Flex align="center">
-            <Search />
+            <Search onChange={e => searchUsers(e.target.value)} />
             {!isLoading && isFetching && (
               <Spinner ml={4} size="sm" colorScheme="gray" />
             )}

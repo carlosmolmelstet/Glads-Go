@@ -41,6 +41,7 @@ export default function Points(): JSX.Element {
   const windowSmall = useBreakpointValue({ base: true, sm: false })
   const pageSize = 10
   const [page, setPage] = useState(1)
+  const [search, setSearch] = useState('')
   const [requestIsLoading, setRequestIsLoading] = useState(false)
   const [userProfile, setUserProfile] = useState({} as UserProfile)
   const [userIds, setUserIds] = useState<string[]>([])
@@ -59,12 +60,24 @@ export default function Points(): JSX.Element {
     }
   }, [user])
 
-  async function fetchUsers(pageParam: number): Promise<ResponseTable<User>> {
+  async function fetchUsers(
+    pageParam: number,
+    search = ''
+  ): Promise<ResponseTable<User>> {
     const { data } = await api.post('user/Filter', {
       page: pageParam,
-      pageSize: pageSize
+      pageSize: pageSize,
+      search: search
     })
     return data
+  }
+
+  let timeout = null
+  function searchUsers(search: string) {
+    clearTimeout(timeout)
+    timeout = setTimeout(function () {
+      setSearch(search)
+    }, 1000)
   }
 
   const mutation = useMutation(
@@ -117,8 +130,8 @@ export default function Points(): JSX.Element {
   }
 
   const { data, isLoading, isError, isFetching } = useQuery(
-    ['usersPoints', page],
-    () => fetchUsers(page),
+    ['users', page, search],
+    () => fetchUsers(page, search),
     { keepPreviousData: true, staleTime: 1000 * 60 }
   )
 
@@ -167,7 +180,7 @@ export default function Points(): JSX.Element {
           align="center"
         >
           <Flex align="center" width={windowSmall ? '100%' : 60}>
-            <Search />
+            <Search onChange={e => searchUsers(e.target.value)} />
             {!isLoading && isFetching && (
               <Spinner ml={4} size="sm" colorScheme="gray" />
             )}
