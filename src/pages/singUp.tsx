@@ -1,43 +1,16 @@
-import {
-  Button,
-  Box,
-  Input,
-  Flex,
-  Stack,
-  useToast,
-  useColorMode,
-  Text,
-  Image,
-  Container
-} from '@chakra-ui/react'
-import { useContext, useEffect } from 'react'
-import Link from 'next/link'
-import { useForm } from 'react-hook-form'
-import Logo from '../components/Layout/Logo'
-import { AuthContext } from '../context/AuthContext'
-import { FormAddUser } from '../components/Form/FormAddUser'
+import { Box, Container, Image, useColorMode } from '@chakra-ui/react'
 import Router from 'next/router'
+import React, { useEffect } from 'react'
+import { FormAddUser } from '../components/Form/FormAddUser'
 
 export default function Home(): JSX.Element {
-  const { signIn } = useContext(AuthContext)
-  const toast = useToast()
   const { colorMode, toggleColorMode } = useColorMode()
 
   useEffect(() => {
-    if (colorMode != 'dark') {
+    if (colorMode !== 'dark') {
       toggleColorMode()
     }
   }, [])
-
-  async function handleSignIn(data) {
-    await signIn(data).catch(function (error) {
-      toast({
-        title: 'Erro',
-        description: error.response.data.message,
-        status: 'error'
-      })
-    });
-  }
 
   return (
     <Box position="relative">
@@ -49,7 +22,8 @@ export default function Home(): JSX.Element {
         justify="center"
         align="center"
         position="relative"
-        <FormAddUser closeModal={() => Router.push('/')}/>
+      >
+        <FormAddUser closeModal={() => Router.push('/')} />
       </Container>
     </Box>
   )
